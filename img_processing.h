@@ -1,13 +1,22 @@
 // Lucy Hu, lhu15
 // Morgan Wu, mwu69
 
+#ifndef IMG_PROCESSING_H
+#define IMG_PROCESSING_H
+
+/**
+ * Helper function to take user-specified operation and check for correct arguments:
+ 
+int CheckArgs(char *op, int argc, char **argv);
+*/
+
 /**
  * Creates a new Image struct.
  * @parameter rows the number of rows in image.
  * @paramater cols the number of columns in image.
  * @return pointer to the new struct.
  */
-Image* CreateImage(int rows; int cols);
+Image* CreateImage(int rows, int cols);
 
 /**
  * Converts image to grayscale.
@@ -41,3 +50,5 @@ Image* Crop(Image* im, int lcol, int lrow, int rcol, int rrow);
  * @return pointer to transposed image struct.
  */
 Image* Transpose(Image* im);
+
+#endif
