@@ -1,7 +1,7 @@
 #include "img_processing.h"
 
 // Create a new Image struct
-Image* createImage(int rows; int cols) {
+Image* CreateImage(int rows; int cols) {
   // Allocate memory for new struct
   Image* new = malloc(sizeof(Image));
   new->rows = rows;
@@ -11,9 +11,9 @@ Image* createImage(int rows; int cols) {
 }
 
 // Grayscale function
-Image* grayscale(Image* im) {
+Image* Grayscale(Image* im) {
   // Allocate memory for output
-  Image* out = createImage(im->rows; im->cols);
+  Image* out = CreateImage(im->rows; im->cols);
 
   for (int i = 0; i < (im->rows * im->cols); i++) {
     Pixel p = im->data[i];
@@ -25,12 +25,12 @@ Image* grayscale(Image* im) {
   return out;
 }
 
-Image* binarize(Image* im, int threshold) {
+Image* Binarize(Image* im, int threshold) {
   // Check if threshold value is valid
   if (threshold <= 0 || threshold >= 255) {
     return NULL; 
   }  
-  Image* out = grayscale(input);
+  Image* out = Grayscale(input);
   for (int i = 0; i < (out->rows * out->cols); i++) {
     float gray = out->data[i]->r;
     if (gray < threshold) {
