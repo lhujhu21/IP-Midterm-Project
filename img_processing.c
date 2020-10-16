@@ -48,3 +48,21 @@ Image* Binarize(Image* im, int threshold) {
   }
   return out;
 }
+
+Image* Crop(Image*im, int lcol, int lrow, int rcol, int rrow) {
+  // Check if corner values are valid
+  if (rcol > im->cols || rrow > im->rows || lcol > rcol || lrow > rrow ||
+      lcol < 0 || lrow < 0 ) {
+    fprintf(stderr, "Invalid corner values, cannot crop\n");
+  }
+  Image* out = CreateImage(rcol - lcol + 1, rrow - lrow + 1);
+  for (int i = lrow; i <= rrow; i++) {
+    int new_row = i - lrow;
+    for (int j = lcol; i <= rcol; j++) {
+      // [row][col] indexing is [i * out->cols + j] 
+      int new_col = j - lcol;
+      out->data[new_row * out->cols + new_col] = im[i * out->cols + j];
+    }
+  } 
+  return out;
+}
