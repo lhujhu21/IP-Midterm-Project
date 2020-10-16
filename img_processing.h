@@ -31,6 +31,13 @@ Image* Binarize(Image* im, int threshold);
  * @parameter lrow is the y-value for the upper left corner
  * @parameter rcol is the x-value for the bottom right corner
  * @parameter rrow is the y-value for the bottom left corner
- * @return pointer to cropper image struct.
+ * @return pointer to cropped image struct.
  */
 Image* Crop(Image* im, int lcol, int lrow, int rcol, int rrow);
+
+/**
+ * Transposes image.
+ * @parameter im Image pointer to be transposed.
+ * @return pointer to transposed image struct.
+ */
+Image* Transpose(Image* im);

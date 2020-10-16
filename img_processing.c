@@ -4,7 +4,7 @@
 #include "img_processing.h"
 
 // Create a new Image struct
-Image* CreateImage(int rows; int cols) {
+Image* CreateImage(int rows, int cols) {
   // Allocate memory for new struct
   Image* new = malloc(sizeof(Image));
   new->rows = rows;
@@ -16,7 +16,7 @@ Image* CreateImage(int rows; int cols) {
 // Grayscale function
 Image* Grayscale(Image* im) {
   // Allocate memory for output
-  Image* out = CreateImage(im->rows; im->cols);
+  Image* out = CreateImage(im->rows, im->cols);
 
   for (int i = 0; i < (im->rows * im->cols); i++) {
     Pixel p = im->data[i];
@@ -55,7 +55,7 @@ Image* Crop(Image*im, int lcol, int lrow, int rcol, int rrow) {
       lcol < 0 || lrow < 0 ) {
     fprintf(stderr, "Invalid corner values, cannot crop\n");
   }
-  Image* out = CreateImage(rcol - lcol + 1, rrow - lrow + 1);
+  Image* out = CreateImage(rrow - lrow + 1, rcol - lcol + 1);
   for (int i = lrow; i <= rrow; i++) {
     int new_row = i - lrow;
     for (int j = lcol; i <= rcol; j++) {
@@ -64,5 +64,15 @@ Image* Crop(Image*im, int lcol, int lrow, int rcol, int rrow) {
       out->data[new_row * out->cols + new_col] = im[i * out->cols + j];
     }
   } 
+  return out;
+}
+
+Image* Transpose(Image* im) {
+  Image* out = CreateImage(im->cols, im->rows);
+  for (int i = 0; i < im->rows; i++) {
+    for (int j = 0; j < im->cols; j++) {
+      out->data[j * out->cols + i] = im->data[i * im->cols + j];
+    }
+  }
   return out;
 }
