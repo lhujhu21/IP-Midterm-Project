@@ -1,3 +1,6 @@
+// Lucy Hu, lhu15
+// Morgan Wu, mwu69
+
 #include "img_processing.h"
 
 // Create a new Image struct
