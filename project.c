@@ -24,9 +24,9 @@
 #include "ppm_io.h" // PPM I/O header
 #include "img_processing.h"
 
-// TODO: include requried headers for your projects.  
+// TODO: include required headers for your projects.  
 // We recommend to put your image processing operations in 
-//  img_processing.h for decleartions and
+//  img_processing.h for declarations and
 //  img_processing.c for their defintions
 // Then you should include the below header:
 //#include "img_processing.h" // Image processing header
