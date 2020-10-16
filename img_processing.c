@@ -1,12 +1,19 @@
 #include "img_processing.h"
 
+// Create a new Image struct
+Image* createImage(int rows; int cols) {
+  // Allocate memory for new struct
+  Image* new = malloc(sizeof(Image));
+  new->rows = rows;
+  new->cols = cols;
+  new->data = malloc(sizeof(Pixel) * rows * cols);
+  return new;
+}
+
 // Grayscale function
 Image* grayscale(Image* im) {
-  // Create Image struct and allocate memory for output photo
-  Image* out = malloc(sizeof(Image));
-  out->rows = im->rows;
-  out->cols = im->cols;
-  out->data = malloc(sizeof(Pixel) * out->rows * out->cols);
+  // Allocate memory for output
+  Image* out = createImage(im->rows; im->cols);
 
   for (int i = 0; i < (im->rows * im->cols); i++) {
     Pixel p = im->data[i];
