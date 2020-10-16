@@ -21,6 +21,7 @@
  *            7: Invalid arguments for the specified operation
  *            8: Other errors 
  *****************************************************************************/
+#include <ctype.h>
 #include "ppm_io.h" // PPM I/O header
 #include "img_processing.h"
 
@@ -32,37 +33,79 @@
 //#include "img_processing.h" // Image processing header
 
 int main(int argc, char **argv) {
-  if (argc > 8) { // Check if max number of args is exceeded
+/*  if (argc > 8) { // Check if max number of args is exceeded
     fprintf(stderr, "Error: too many command line arguments\n");
     return 1;
   }
+*/
 
   // Open input and output files for binary reading/writing
   // Check for errors 
-  FILE* input = fopen(argv[2], "rb");
+  FILE* input = fopen(argv[1], "rb");
   if (!input) {
-    fprintf(stderr, "Error: couldn't open input file: %s\n", argv[2]);
+    fprintf(stderr, "Error: couldn't open input file: %s\n", argv[1]);
+    return 2;
   }
-  FILE* output = fopen(argv[3], "wb");
+  FILE* output = fopen(argv[2], "wb");
   if (!output) {
-    fprintf(stderr, "Error: couldn't open output file: %s\n", argv[3]);
+    fprintf(stderr, "Error: couldn't open output file: %s\n", argv[2]);
+    return 3;
   }
 
   // Create Image struct for input file and for output photo
   Image* im = ReadPPM(input);
+  if (im == NULL) {
+    fprintf(stderr, "Error: input file cannot be read as PPM file\n");
+    return 4;
+  }
   Image* out; // Struct to store processed photo
 
   // Match image processing operation
   // Add more cases later!
-  switch (argv[4]) {
-  case "grayscale":
-    out = Grayscale(Im);
-    break;
-  case "binarize":
-    out = Binarize(Im, (int)argv[5]);
-    break;
-  default:
-    fprintf(stderr, "Error: invalid image processing command: %s\n", argv[4]);
+  char op[] = tolower(argv[3]);
+  // call Grayscale
+  if (strcmp(op, "grayscale") == 0) {
+    out = Grayscale(im);
+  }
+  // call Binarize
+  else if (strcmp(op, "binarize") == 0) {
+    int threshold;
+    if (sscanf(argv[4], " %d ", &threshold) != 1) {
+      fprintf(stderr, "Error: invalid argument for Binarize\n");
+      return 7;
+    }
+    if (argc < 5) {
+      fprintf(stderr, "Error: not enough arguments supplied for Binarize function\n");
+      return 6; 
+    }
+    out = Binarize(im, threshold);
+  }
+  else if (strcmp(op, "crop") == 0) {
+    if (argc < 8) {
+      fprintf(stderr, "Error: not enough arguments supplied for crop function\n");
+      return 6;
+    }
+    int lcol, lrow, rcol, rrow;
+    if (sscanf(argv[4], " %d ", &lcol) != 1 ||
+	      sscanf(argv[5], " %d ", &lrow) != 1 ||
+	      sscanf(argv[6], " %d ", &rcol) != 1 ||
+	      sscanf(argv[7], " %d ", &rrow) != 1) {
+      fprintf(stderr, "Error: invalid argument for Crop\n");
+      return 7;
+    }
+    out = Crop(im, lcol, lrow, rcol, rrow);
+  }
+  else if (strcmp(op, "transpose") == 0) {
+    out = Transpose(im);
+  }
+  else {
+    fprintf(stderr, "Error: unsupported image processing command: %s\n", argv[4]);
+    return 5;
+  }
+
+  if (out == NULL) {
+    // NULL pointer returned because unable to complete operation due to invalid arguments
+    return 7;
   }
   
   // Write image to file

@@ -1,5 +1,5 @@
-// <your name> and <your JHED>
-// __Add your name and JHED above__
+// Lucy Hu and Morgan Wu
+// lhu15 and mwu69
 /*****************************************************************************
  * Midterm Project - PPM file input/output header file
  * Note: for naming convention, we try to follow Google C++ style guide:
@@ -8,8 +8,8 @@
  * 
  * Summary: This file provides the utility functions to read/write PPM file
  *****************************************************************************/
-#ifndef MIDTERM_PPM_IO_H_
-#define MIDTERM_PPM_IO_H_
+#ifndef PPM_IO_H
+#define PPM_IO_H
 
 #include <stdio.h> // c file type: FILE
 
