@@ -1,0 +1,4 @@
+Questions
+
+1) How to trim down length of main function. Implement CheckArgs function?
+2) Xming/Xquartz not working
