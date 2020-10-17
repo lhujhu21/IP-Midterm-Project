@@ -53,13 +53,27 @@ int main(int argc, char **argv) {
   }
 
   // Create Image struct for input file and for output photo
-  Image* im = ReadPPM(input);
+  Image* im = malloc(sizeof(Image));
+  if (!im) {
+    fprintf(stderr, "Error: image allocation failed\n");
+    return 8; // what error code does this fall under?
+  }
+  im = ReadPPM(input);
   if (im == NULL) {
     fprintf(stderr, "Error: input file cannot be read as PPM file\n");
     return 4;
   }
   Image* out; // Struct to store processed photo
 
+  // Create Args struct for image processing arguments
+  /*
+  Args* values = malloc(sizeof(Args));
+  if (!values) {
+    fprintf(stderr, "Error: unable to allocate memory for arguments\n");
+    return 8;
+  }
+  */
+  
   // Match image processing operation
   // Add more cases later!
   char op[] = tolower(argv[3]);
@@ -69,7 +83,11 @@ int main(int argc, char **argv) {
   }
   // call Binarize
   else if (strcmp(op, "binarize") == 0) {
-    int threshold;
+    /*
+    int check = CheckArgs(op, arc, argv, values);
+    if (check != 0) return check;
+    */
+    int threshold; // Wouldn't need this anymore
     if (sscanf(argv[4], " %d ", &threshold) != 1) {
       fprintf(stderr, "Error: invalid argument for Binarize\n");
       return 7;
@@ -78,7 +96,7 @@ int main(int argc, char **argv) {
       fprintf(stderr, "Error: not enough arguments supplied for Binarize function\n");
       return 6; 
     }
-    out = Binarize(im, threshold);
+    out = Binarize(im, threshold); // change to values->threshold
   }
   else if (strcmp(op, "crop") == 0) {
     if (argc < 8) {
@@ -93,7 +111,7 @@ int main(int argc, char **argv) {
       fprintf(stderr, "Error: invalid argument for Crop\n");
       return 7;
     }
-    out = Crop(im, lcol, lrow, rcol, rrow);
+    out = Crop(im, lcol, lrow, rcol, rrow); // change to values->lcol, values->lrow, etc.
   }
   else if (strcmp(op, "transpose") == 0) {
     out = Transpose(im);
