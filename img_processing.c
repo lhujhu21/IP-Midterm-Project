@@ -5,18 +5,54 @@
 #include "ppm_io.h"
 
 /*
-int CheckArgs(char *op, int argc, char **argv) {
-  // Check Binarize function
+int CheckArgs(char *op, int argc, char **argv, Args* values) {
+  // Check arguments for Binarize function
   if (strcmp(op, "binarize") == 0) {
     // Incorrect number of values -- returns 6 in main
     if (argc < 5) {
       fprintf(stderr, "Error: not enough arguments supplied for Binarize function\n");
-      return -6; 
+      return 6; 
     }
     // Invalid threshold values -- returns 7 in main
-    
-    
-    }  
+    int threshold;
+    if (sscanf(argv[4], " %d ", &threshold) != 1) {
+      fprintf(stderr, "Error: invalid argument for Binarize\n");
+      return 7;
+    } else if (threshold <= 0 || threshold >= 255) {
+	fprintf(stderr, "Error: invalid threshold value %d\n", threshold);
+      return 7;
+    }
+    // If there are no errors, assign to struct and return 0
+    values->threshold = threshold;
+    return 0; 
+  }
+
+  // Check arguments for Crop function
+  if (strcmp(op, "binarize") == 0) {
+    // Incorrect number of values
+    if (argc < 8) {
+      fprintf(stderr, "Error: not enough arguments supplied for crop function\n");
+      return 6;
+    }
+    // Invalid corner values
+    int lcol, lrow, rcol, rrow;
+    if (sscanf(argv[4], " %d ", &lcol) != 1 ||
+	sscanf(argv[5], " %d ", &lrow) != 1 ||
+	sscanf(argv[6], " %d ", &rcol) != 1 ||
+	sscanf(argv[7], " %d ", &rrow) != 1) {
+      fprintf(stderr, "Error: invalid argument for Crop\n");
+      return 7;
+    } else if (rcol > im->cols || rrow > im->rows || lcol > rcol ||
+	       lrow > rrow || lcol < 0 || lrow < 0 ) {
+      fprintf(stderr, "Error: invalid corner values %d %d %d %d\n", lcol, lrow, rcol, rrow);
+      return 7;
+    }
+    // If there are no errors, assign to struct and return 0
+    values->lcol = lcol;
+    values->lrow = lrow;
+    values->rcol = rcol;
+    values->rrow = rrow;
+    return 0;
   }
 }
 */
