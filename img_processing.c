@@ -1,6 +1,9 @@
 // Lucy Hu, lhu15
 // Morgan Wu, mwu69
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 #include "img_processing.h"
 #include "ppm_io.h"
 

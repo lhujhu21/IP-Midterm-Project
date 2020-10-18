@@ -22,6 +22,9 @@
  *            8: Other errors 
  *****************************************************************************/
 #include <ctype.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 #include "ppm_io.h" // PPM I/O header
 #include "img_processing.h"
 
@@ -76,7 +79,7 @@ int main(int argc, char **argv) {
   
   // Match image processing operation
   // Add more cases later!
-  char op[] = tolower(argv[3]);
+  char op[] = tolower(argv[3]); // May need to loop through? tolower only works on char
   // call Grayscale
   if (strcmp(op, "grayscale") == 0) {
     out = Grayscale(im);
