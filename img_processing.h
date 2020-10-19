@@ -68,4 +68,12 @@ Image* Crop(Image* im, int lcol, int lrow, int rcol, int rrow);
  */
 Image* Transpose(Image* im);
 
+/**
+ * Computes the magnitude of the gradient at each interior pixel.
+ * Returns image with each pixel's color channels set to gradient magnitude.
+ * @parameter im Image pointer for which gradient is computed
+ * @return pointer to gradient image.
+ */
+Image* Gradient(Image *im);
+
 #endif

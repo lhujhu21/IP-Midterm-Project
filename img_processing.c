@@ -85,6 +85,7 @@ Image* Grayscale(Image* im) {
   return out;
 }
 
+// Binarize function
 Image* Binarize(Image* im, int threshold) {
   // Check validity of threshold
   if (threshold <= 0 || threshold >= 255) {
@@ -107,6 +108,7 @@ Image* Binarize(Image* im, int threshold) {
   return out;
 }
 
+// Crop function
 Image* Crop(Image*im, int lcol, int lrow, int rcol, int rrow) {
   // Check if corner values are valid
   if (rcol > im->cols || rrow > im->rows || lcol > rcol || lrow > rrow ||
@@ -125,11 +127,36 @@ Image* Crop(Image*im, int lcol, int lrow, int rcol, int rrow) {
   return out;
 }
 
+// Transpose function
 Image* Transpose(Image* im) {
   Image* out = CreateImage(im->cols, im->rows);
   for (int i = 0; i < im->rows; i++) {
     for (int j = 0; j < im->cols; j++) {
       out->data[j * out->cols + i] = im->data[i * im->cols + j];
+    }
+  }
+  return out;
+}
+
+// Gradient function
+Image* Gradient(Image *im){
+  // Allocate memory for output image
+  Image* out = CreateImage(im->rows, im->cols);
+  // Compute magnitude of gradient at each pixel
+  for (int i = 0; i < im->rows; i++) {
+    for (int j = 0; j < im->cols; j++) {
+      // For pixels on the boundary, set gradient to 0
+      unsigned char gradient = 0;
+      Pixel pixel = out->data[i * out->cols + j];
+      // For pixels not on the boundary, calculate gradient
+      if (i != 0 && i != out->rows && j != 0 && j != out->cols) {
+        float x_grad = 
+        
+      }
+      // Set gradient value to color channels of the pixel
+      pixel.r = gradient;
+      pixel.g = gradient;
+      pixel.b = gradient;
     }
   }
   return out;
