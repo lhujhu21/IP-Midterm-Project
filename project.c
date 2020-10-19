@@ -26,14 +26,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "ppm_io.h" // PPM I/O header
-#include "img_processing.h"
-
-// TODO: include required headers for your projects.  
-// We recommend to put your image processing operations in 
-//  img_processing.h for declarations and
-//  img_processing.c for their defintions
-// Then you should include the below header:
-//#include "img_processing.h" // Image processing header
+#include "img_processing.h" // image processing function headers
 
 int main(int argc, char **argv) {
 /*  if (argc > 8) { // Check if max number of args is exceeded
@@ -101,6 +94,7 @@ int main(int argc, char **argv) {
     }
     out = Binarize(im, threshold); // change to values->threshold
   }
+  // call Crop
   else if (strcmp(op, "crop") == 0) {
     if (argc < 8) {
       fprintf(stderr, "Error: not enough arguments supplied for crop function\n");
@@ -116,9 +110,15 @@ int main(int argc, char **argv) {
     }
     out = Crop(im, lcol, lrow, rcol, rrow); // change to values->lcol, values->lrow, etc.
   }
+  // call Transpose
   else if (strcmp(op, "transpose") == 0) {
     out = Transpose(im);
   }
+  // call Gradient
+  else if (strcmp(op, "gradient") == 0) {
+    
+  }
+  // call SeamCarve
   else {
     fprintf(stderr, "Error: unsupported image processing command: %s\n", argv[4]);
     return 5;
