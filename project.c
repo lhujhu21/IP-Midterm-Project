@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
   
   // Match image processing operation
   // Add more cases later!
-  char op[] = LowerCase(argv[3]); // used helper function defined in img_processing.h
+  char *op = LowerCase(argv[3]); // used helper function defined in img_processing.h
   // call Grayscale
   if (strcmp(op, "grayscale") == 0) {
     out = Grayscale(im);
@@ -132,6 +132,11 @@ int main(int argc, char **argv) {
   
   // Write image to file
   int num = WritePPM(output, out); // Number of pixels successfully written
+
+  if (num != out->rows * out->cols) {
+    fprintf(stderr, "Error: did not successfully write processed image to output\n");
+    return 3;
+  }
   
   return 0;
 }

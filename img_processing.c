@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h> // use tolower() to remove case-sensitivity from user-input
 #include "img_processing.h"
 #include "ppm_io.h"
 
@@ -68,19 +69,21 @@ int CheckArgs(Image *im, char *op, int argc, char **argv, Args* values) {
     float col_sf;
     float row_sf;
     if (sscanf(argv[4], " %f ", &col_sf) != 1 ||
-	sscanf(argv[5], " %f ", &row_sf) != 1) {
+	      sscanf(argv[5], " %f ", &row_sf) != 1) {
       fprintf(stderr, "Error: invalid argument for Seam Carve\n");
       return 7;
     }
     if (col_sf < 0 || col_sf > 1 ||
-	argv[5] < 0 || row_sf > 1){
-      fprintf(stderr, "Error: invalid scaling factor values %d %d\n");
+	      row_sf < 0 || row_sf > 1) {
+      fprintf(stderr, "Error: invalid scaling factor values %f %f\n", col_sf, row_sf);
       return 7;
     }
     // If there are no errors, assign to struct and return 0;
     values->col_sf = col_sf;
     values->row_sf = row_sf;
+    return 0;
   }
+  return 0;
 }
 
 // Convert string to lowercase
@@ -176,7 +179,6 @@ Image* Gradient(Image *im){
     for (int j = 0; j < im->cols; j++) {
       // For pixels on the boundary, set gradient to 0
       unsigned char gradient = 0;
-      Pixel p = out->data[i * out->cols + j];
       // For pixels not on the boundary, calculate gradient
       if (i != 0 && i != out->rows && j != 0 && j != out->cols) {
         // Get grayscale values for adjacent pixels
@@ -194,14 +196,16 @@ Image* Gradient(Image *im){
         gradient = x_grad + y_grad;
       }
       // Set gradient value to color channels of the pixel
-      p.r = gradient;
-      p.g = gradient;
-      p.b = gradient;
+      Pixel *p = out->data + (i * out->cols + j);
+      p->r = gradient;
+      p->g = gradient;
+      p->b = gradient;
     }
   }
   return out;
 }
 
+/*
 // Seam carving function
 Image* SeamCarving(Image* im, float col_sf, float row_sf) {
   Image* og = CreateImage(im->rows, im->cols); // Save a copy of the original Image struct
@@ -224,6 +228,8 @@ Image* SeamCarving(Image* im, float col_sf, float row_sf) {
     }
   }
 
+ 
+
 
 
 
@@ -232,3 +238,5 @@ Image* SeamCarving(Image* im, float col_sf, float row_sf) {
 
 
 }
+
+*/

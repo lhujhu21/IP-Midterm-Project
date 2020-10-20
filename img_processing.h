@@ -4,6 +4,8 @@
 #ifndef IMG_PROCESSING_H
 #define IMG_PROCESSING_H
 
+#include "ppm_io.h"
+
 /** 
  * A struct to store all possible image processing arguments.
  */
