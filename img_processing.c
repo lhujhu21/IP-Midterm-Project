@@ -60,6 +60,12 @@ int CheckArgs(char *op, int argc, char **argv, Args* values) {
 }
 */
 
+// Convert string to lowercase
+char* LowerCase(char* op) {
+  for (char* i = op; *i != '\0'; op++) *i = tolower(*i);
+  return op;
+}
+
 // Create a new Image struct
 Image* CreateImage(int rows, int cols) {
   // Allocate memory for new struct
@@ -140,23 +146,34 @@ Image* Transpose(Image* im) {
 
 // Gradient function
 Image* Gradient(Image *im){
-  // Allocate memory for output image
-  Image* out = CreateImage(im->rows, im->cols);
+  // Pass image through Grayscale function
+  Image* out = Grayscale(im);
   // Compute magnitude of gradient at each pixel
   for (int i = 0; i < im->rows; i++) {
     for (int j = 0; j < im->cols; j++) {
       // For pixels on the boundary, set gradient to 0
       unsigned char gradient = 0;
-      Pixel pixel = out->data[i * out->cols + j];
+      Pixel p = out->data[i * out->cols + j];
       // For pixels not on the boundary, calculate gradient
       if (i != 0 && i != out->rows && j != 0 && j != out->cols) {
-        float x_grad = 
-        
+        // Get grayscale values for adjacent pixels
+        Pixel p_right = out->data[i * out->cols + j + 1];
+        Pixel p_left = out->data[i * out->cols + j - 1];
+        Pixel p_top = out->data[(i-1) * out->cols + j];
+        Pixel p_bot = out->data[(i+1) * out->cols + j];
+        // Calculate gradient in x and y direction
+        float x_grad = 0.5*(p_right.r - p_left.r);
+        float y_grad = 0.5*(p_top.r - p_bot.r);
+        // Take absolute value
+        if (x_grad < 0) x_grad *= -1;
+        if (y_grad < 0) y_grad *= -1;
+        // Sum together for final G(x,y) gradient value
+        gradient = x_grad + y_grad;
       }
       // Set gradient value to color channels of the pixel
-      pixel.r = gradient;
-      pixel.g = gradient;
-      pixel.b = gradient;
+      p.r = gradient;
+      p.g = gradient;
+      p.b = gradient;
     }
   }
   return out;

@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
   
   // Match image processing operation
   // Add more cases later!
-  char op[] = tolower(argv[3]); // May need to loop through? tolower only works on char
+  char op[] = LowerCase(argv[3]); // used helper function defined in img_processing.h
   // call Grayscale
   if (strcmp(op, "grayscale") == 0) {
     out = Grayscale(im);
@@ -116,9 +116,10 @@ int main(int argc, char **argv) {
   }
   // call Gradient
   else if (strcmp(op, "gradient") == 0) {
-    
+    out = Gradient(im);
   }
   // call SeamCarve
+  
   else {
     fprintf(stderr, "Error: unsupported image processing command: %s\n", argv[4]);
     return 5;

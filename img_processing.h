@@ -28,6 +28,13 @@ int CheckArgs(char *op, int argc, char **argv, Args* values);
 */
 
 /**
+ * Helper function to remove case-sensitivity of user-entered arguments
+ * @parameter *op the function name to convert to lowercase
+ * @return string where all letters are converted to lowercase
+ */
+char* LowerCase(char* op);
+
+/**
  * Creates a new Image struct.
  * @parameter rows the number of rows in image.
  * @paramater cols the number of columns in image.
