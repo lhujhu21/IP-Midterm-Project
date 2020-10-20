@@ -1,5 +1,5 @@
-// Lucy Hu and Morgan Wu
-// lhu15 and mwu69
+// Lucy Hu, lhu15
+// Morgan Wu, mwu69
 /*****************************************************************************
  * Midterm Project - PPM file input/output header file
  * Note: for naming convention, we try to follow Google C++ style guide:
@@ -13,7 +13,7 @@
 
 #include <stdio.h> // c file type: FILE
 
-/* A struct to store a point (2D coordiante).
+/* A struct to store a point (2D coordinate).
  */ 
 typedef struct _point {
   int x;
