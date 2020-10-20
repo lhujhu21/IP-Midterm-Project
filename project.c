@@ -80,7 +80,7 @@ int main(int argc, char **argv) {
   // call Binarize
   else if (strcmp(op, "binarize") == 0) {
     /*
-    int check = CheckArgs(op, arc, argv, values);
+    int check = CheckArgs(im, op, arc, argv, values);
     if (check != 0) return check;
     */
     int threshold; // Wouldn't need this anymore

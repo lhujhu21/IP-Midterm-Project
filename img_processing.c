@@ -7,7 +7,7 @@
 #include "img_processing.h"
 #include "ppm_io.h"
 
-int CheckArgs(char *op, int argc, char **argv, Args* values) {
+int CheckArgs(Image *im, char *op, int argc, char **argv, Args* values) {
   // Check arguments for Binarize function
   if (strcmp(op, "binarize") == 0) {
     // Incorrect number of values -- returns 6 in main
@@ -39,13 +39,13 @@ int CheckArgs(char *op, int argc, char **argv, Args* values) {
     // Invalid corner values
     int lcol, lrow, rcol, rrow;
     if (sscanf(argv[4], " %d ", &lcol) != 1 ||
-	sscanf(argv[5], " %d ", &lrow) != 1 ||
-	sscanf(argv[6], " %d ", &rcol) != 1 ||
-	sscanf(argv[7], " %d ", &rrow) != 1) {
+	      sscanf(argv[5], " %d ", &lrow) != 1 ||
+	      sscanf(argv[6], " %d ", &rcol) != 1 ||
+	      sscanf(argv[7], " %d ", &rrow) != 1) {
       fprintf(stderr, "Error: invalid argument for Crop\n");
       return 7;
-    } else if (rcol > im->cols || rrow > im->rows || lcol > rcol ||
-	       lrow > rrow || lcol < 0 || lrow < 0 ) {
+    } else if (rcol > im->cols || rrow > im->rows || lcol > rcol || 
+	             lrow > rrow || lcol < 0 || lrow < 0 ) { 
       fprintf(stderr, "Error: invalid corner values %d %d %d %d\n", lcol, lrow, rcol, rrow);
       return 7;
     }
@@ -78,8 +78,8 @@ int CheckArgs(char *op, int argc, char **argv, Args* values) {
       return 7;
     }
     // If there are no errors, assign to struct and return 0;
-    Args->col_sf = col_sf;
-    Args->row_sf = row_sf;
+    values->col_sf = col_sf;
+    values->row_sf = row_sf;
   }
 }
 
@@ -204,7 +204,7 @@ Image* Gradient(Image *im){
 
 // Seam carving function
 Image* SeamCarving(Image* im, float col_sf, float row_sf) {
-  Image* og = CreateImage(im, im->rows, im->cols); // Save a copy of the original Image struct
+  Image* og = CreateImage(im->rows, im->cols); // Save a copy of the original Image struct
   int new_cols = col_sf * im->cols;
   if (new_cols < 2) new_cols = 2;
   int d = im->cols - new_cols;

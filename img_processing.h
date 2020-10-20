@@ -20,13 +20,14 @@ typedef struct _args {
 
 /**
  * Helper function to take user-specified operation and check for correct arguments.
+ * @parameter *im the image-to-be-processed for which arguments are checked against (necessary for Crop)
  * @parameter *op the function name to check arguments for.
  * @parameter argc the number of items in argv.
  * @parameter argv array of command line arguments. 
  * @parameter values pointer to Args struct to store read values
  * @return 0 for no errors, 6 for incorrect # of args, 7 for invalid args
  */
-int CheckArgs(char *op, int argc, char **argv, Args* values);
+int CheckArgs(Image* im, char *op, int argc, char **argv, Args* values);
 
 
 /**
