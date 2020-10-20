@@ -8,24 +8,26 @@
  * A struct to store all possible image processing arguments.
  */
 typedef struct _args {
-  int threshold;
-  int lcol;
-  int lrow;
-  int rcol;
-  int rrow;
-  // float csf; // column scale factor
-  // float rsf; // row scale factor
+  int threshold; // Binarize
+  int lcol; // Crop
+  int lrow; // Crop
+  int rcol; // Crop
+  int rrow; // Crop
+  float col_sf; // Seam carving
+  float row_sf; // Seam carving
 } Args;
 
-/*
+
+/**
  * Helper function to take user-specified operation and check for correct arguments.
  * @parameter *op the function name to check arguments for.
  * @parameter argc the number of items in argv.
  * @parameter argv array of command line arguments. 
  * @parameter values pointer to Args struct to store read values
  * @return 0 for no errors, 6 for incorrect # of args, 7 for invalid args
+ */
 int CheckArgs(char *op, int argc, char **argv, Args* values);
-*/
+
 
 /**
  * Helper function to remove case-sensitivity of user-entered arguments
@@ -83,4 +85,12 @@ Image* Transpose(Image* im);
  */
 Image* Gradient(Image *im);
 
+/**
+ * Seam carves image. 
+ * @parameter im Image pointer for input image.
+ * @parameter col_sf column sizescaling factor.
+ * @parameter row_sf row size scaling factor 
+ * @return pointer to seam carved image. 
+ */
+Image* SeamCarving(Image* im, float col_sf, float row_sf);
 #endif

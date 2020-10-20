@@ -7,7 +7,6 @@
 #include "img_processing.h"
 #include "ppm_io.h"
 
-/*
 int CheckArgs(char *op, int argc, char **argv, Args* values) {
   // Check arguments for Binarize function
   if (strcmp(op, "binarize") == 0) {
@@ -57,8 +56,32 @@ int CheckArgs(char *op, int argc, char **argv, Args* values) {
     values->rrow = rrow;
     return 0;
   }
+
+  // Check arguments for Seam Carving function
+  if (strcmp(op, "seam") == 0) {
+    // Incorrect number of values
+    if (argc < 6) {
+      fprintf(stderr, "Error: not enough arguments supplied for crop function\n");
+      return 6;
+    }
+    // Check for invalid values
+    float col_sf;
+    float row_sf;
+    if (sscanf(argv[4], " %f ", &col_sf) != 1 ||
+	sscanf(argv[5], " %f ", &row_sf) != 1) {
+      fprintf(stderr, "Error: invalid argument for Seam Carve\n");
+      return 7;
+    }
+    if (col_sf < 0 || col_sf > 1 ||
+	argv[5] < 0 || row_sf > 1){
+      fprintf(stderr, "Error: invalid scaling factor values %d %d\n");
+      return 7;
+    }
+    // If there are no errors, assign to struct and return 0;
+    Args->col_sf = col_sf;
+    Args->row_sf = row_sf;
+  }
 }
-*/
 
 // Convert string to lowercase
 char* LowerCase(char* op) {
@@ -83,7 +106,7 @@ Image* Grayscale(Image* im) {
 
   for (int i = 0; i < (im->rows * im->cols); i++) {
     Pixel p = im->data[i];
-    float gray = 0.3 * p.r + 0.59 * p.g + 0.11 * p.b;
+    unsigned char gray = 0.3 * p.r + 0.59 * p.g + 0.11 * p.b;
     out->data[i].r = gray;
     out->data[i].g = gray;
     out->data[i].b = gray;
@@ -177,4 +200,11 @@ Image* Gradient(Image *im){
     }
   }
   return out;
+}
+
+// Seam carving function
+Image* SeamCarving(Image* im, float col_sf, float row_sf) {
+  
+
+
 }
