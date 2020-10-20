@@ -204,7 +204,31 @@ Image* Gradient(Image *im){
 
 // Seam carving function
 Image* SeamCarving(Image* im, float col_sf, float row_sf) {
-  
+  Image* og = CreateImage(im, im->rows, im->cols); // Save a copy of the original Image struct
+  int new_cols = col_sf * im->cols;
+  if (new_cols < 2) new_cols = 2;
+  int d = im->cols - new_cols;
+  for (int seam = 1; seam <= d; seam++) {
+    og = Gradient(og);
+    for (int i = 0; i < og->cols; i++) {
+      Pixel seams[og->cols][og->rows];
+      int col = i;
+      for (int j = 0; j < og->rows; j++) {
+	seams[i][j] = og->data[j * og->cols + i];
+	if (j + 1 == og->rows) {
+	  seams[i][j] = og->data[]
+	}
+	
+	seams[i][j] = og->data
+      }
+    }
+  }
+
+
+
+
+  int new_rows = row_sf * im->row;
+  if (new_rows < 2) new_rows = 2;
 
 
 }
