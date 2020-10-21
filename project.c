@@ -29,12 +29,6 @@
 #include "img_processing.h" // image processing function headers
 
 int main(int argc, char **argv) {
-/*  if (argc > 8) { // Check if max number of args is exceeded
-    fprintf(stderr, "Error: too many command line arguments\n");
-    return 1;
-  }
-*/
-
   // Open input and output files for binary reading/writing
   // Check for errors 
   FILE* input = fopen(argv[1], "rb");
@@ -62,16 +56,13 @@ int main(int argc, char **argv) {
   Image* out; // Struct to store processed photo
 
   // Create Args struct for image processing arguments
-  /*
   Args* values = malloc(sizeof(Args));
   if (!values) {
     fprintf(stderr, "Error: unable to allocate memory for arguments\n");
     return 8;
   }
-  */
   
   // Match image processing operation
-  // Add more cases later!
   char *op = LowerCase(argv[3]); // used helper function defined in img_processing.h
   // call Grayscale
   if (strcmp(op, "grayscale") == 0) {
