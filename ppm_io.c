@@ -14,6 +14,12 @@
 #include <string.h> // c functions: strncmp, memcpy
 #include <ctype.h>  // c functions: isspace
 
+// GetPixel returns pixel pointer at x,y coordinates in image
+Pixel * GetPixel(Point pt, Image * im) {
+ Pixel * p = &(im->data[pt.y * im->cols + pt.x]);
+  return p;
+}
+
 /* ReadNum
  * helper function for ReadPPM, takes a filehandle
  * and reads a number, but detects and skips comment lines

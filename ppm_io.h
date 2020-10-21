@@ -47,10 +47,7 @@ typedef struct _image {
  * @parameter Image * im is a pointer to the image in which the pixel is contained
  * @returns pointer to the Pixel within the image at the given x-y coordinates
  */
-Pixel * GetPixel(Point pt, Image * im) {
-  Pixel * p = &(im->data[pt.y * im->cols + pt.x]);
-  return p;
-}
+Pixel * GetPixel(Point pt, Image * im);
 
 /* ReadPPM
  * Read a PPM-formatted image from a file (assumes fp != NULL).
