@@ -12,8 +12,8 @@ int CheckArgs(Image *im, char *op, int argc, char **argv, Args* values) {
   // Check arguments for Binarize function
   if (strcmp(op, "binarize") == 0) {
     // Incorrect number of values -- returns 6 in main
-    if (argc < 5) {
-      fprintf(stderr, "Error: not enough arguments supplied for Binarize function\n");
+    if (argc != 5) {
+      fprintf(stderr, "Error: incorrect number of arguments supplied for Binarize function\n");
       return 6; 
     }
     // Invalid threshold values -- returns 7 in main
@@ -33,8 +33,8 @@ int CheckArgs(Image *im, char *op, int argc, char **argv, Args* values) {
   // Check arguments for Crop function
   if (strcmp(op, "binarize") == 0) {
     // Incorrect number of values
-    if (argc < 8) {
-      fprintf(stderr, "Error: not enough arguments supplied for crop function\n");
+    if (argc != 8) {
+      fprintf(stderr, "Error: incorrect number of arguments supplied for crop function\n");
       return 6;
     }
     // Invalid corner values
@@ -61,8 +61,8 @@ int CheckArgs(Image *im, char *op, int argc, char **argv, Args* values) {
   // Check arguments for Seam Carving function
   if (strcmp(op, "seam") == 0) {
     // Incorrect number of values
-    if (argc < 6) {
-      fprintf(stderr, "Error: not enough arguments supplied for crop function\n");
+    if (argc != 6) {
+      fprintf(stderr, "Error: incorrect number of arguments supplied for crop function\n");
       return 6;
     }
     // Check for invalid values
@@ -219,11 +219,32 @@ Image* SeamCarving(Image* im, float col_sf, float row_sf) {
 
   // For every iteration of this loop, carve out one seam and realloc memory for the seam-carved image until d seams are carved out
   for (int seam = 1; seam <= d; seam++) {
-    
-    // For every iteration of this loop, start at each column index 'col' to map a potential seam
+    // Each potential seam is one row, with out->rows number of pixels in each seam
+    Pixel * seams[out->cols][out->rows]; 
+    seams = GetPotentialSeams(out, seams);
+
+    // TO-DOs FOR FUTURE SELVES: LOOK AT COMMENTS
+    // 1) Now that seams array contains all potential seams, sum over each row to get the gradient energy of each seam
+    // 2) Identify seam with the lowest gradient energy
+    // 3) Allocate new image with one less column representing the carved out seam
+    // 4) Copy each pixel over to new image, unless pixel pointer == a seam pixel pointer. 
+    //    Probably best to increment pointer through the identified seam to be carved out.
+    // 5) Set out image to this new image
+    // 6) Repeat the loop until all seams are carved out
+    // 7) Transpose and do the same with rows
+
+    // IDEA: not recursion, but a helper function to perform the actual Seam Carve within the SeamCarving Function
+
+    // NOTE TO SELVES: don't forget to free memory after allocating new image memory
+    // i.e. if new image (with one less column for the carved out seam) is malloc-ed to Image * new, 
+    // free(out), then set Image * out = new
+  }
+}
+
+int GetPotentialSeams(out, seams) {
+  // For every iteration of this loop, start at each column index 'col' to map a potential seam
     for (int i = 0; i < out->cols; i++) {
       // Create a 2D array of pixel pointers to store seams, each starting with a pixel in unique column index and row 0
-      Pixel * seams[out->cols][out->rows]; // each potential seam is one row, with out->rows number of pixels in each seam
       int col = i; // index variable to keep track of column position of seam as it is carved out. 
       
       // For every iteration of this loop, do two things: 
@@ -243,6 +264,8 @@ Image* SeamCarving(Image* im, float col_sf, float row_sf) {
         // ****(not necessary due to way the else statements are set up, but may make the code run faster as won't have to check)****
         if (pt.x == 0) col += 1;
         else if (pt.x == out->rows) col -= 1;
+        // If second-to-last row, connect automatically to below pixel
+        else if (pt.y == out->rows - 1) col = col;
         // Else, consider three neighbors (two for columns adjacent to boundary, since boundary pixels not considered)
         else {
           int temp_col = col; // temporary variable to keep track of column index of neighbor with lowest gradient
@@ -278,22 +301,7 @@ Image* SeamCarving(Image* im, float col_sf, float row_sf) {
         }
       }
     }
-    // TO-DOs FOR FUTURE SELVES: LOOK AT COMMENTS
-    // 1) Now that seams array contains all potential seams, sum over each row to get the gradient energy of each seam
-    // 2) Identify seam with the lowest gradient energy
-    // 3) Allocate new image with one less column representing the carved out seam
-    // 4) Copy each pixel over to new image, unless pixel pointer == a seam pixel pointer. 
-    //    Probably best to increment pointer through the identified seam to be carved out.
-    // 5) Set out image to this new image
-    // 6) Repeat the loop until all seams are carved out
-    // 7) Transpose and do the same with rows
-
-    // IDEA: not recursion, but a helper function to perform the actual Seam Carve within the SeamCarving Function
-    // Function would take in an image, then return an image with one seam carved out, to make SeamCarving more readable
-    // ehhhhhhhhhhh let me think about this more, may be unnecessary...
-
-    // NOTE TO SELVES: don't forget to free memory after allocating new image memory
-    // i.e. if new image (with one less column for the carved out seam) is malloc-ed to Image * new, 
-    // free(out), then set Image * out = new
-  }
+  return &seams; // DOUBLE-CHECK AMPERSAND
 }
+
+
