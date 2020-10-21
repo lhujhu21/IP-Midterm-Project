@@ -220,30 +220,80 @@ Image* SeamCarving(Image* im, float col_sf, float row_sf) {
   // For every iteration of this loop, carve out one seam and realloc memory for the seam-carved image until d seams are carved out
   for (int seam = 1; seam <= d; seam++) {
     
-    // For every iteration of this loop, start at each column index 'col' 
-    for (int col = 0; col < out->cols; col++) {
-      Pixel seams[out->cols][out->rows];
-      int col = i;
-      for (int j = 0; j < og->rows; j++) {
-	seams[i][j] = og->data[j * og->cols + i];
-	if (j + 1 == og->rows) {
-	  seams[i][j] = og->data[]
-	}
-	
-	seams[i][j] = og->data
+    // For every iteration of this loop, start at each column index 'col' to map a potential seam
+    for (int i = 0; i < out->cols; i++) {
+      // Create a 2D array of pixel pointers to store seams, each starting with a pixel in unique column index and row 0
+      Pixel * seams[out->cols][out->rows]; // each potential seam is one row, with out->rows number of pixels in each seam
+      int col = i; // index variable to keep track of column position of seam as it is carved out. 
+      
+      // For every iteration of this loop, do two things: 
+      // 1) Store the current pixel into 2D array for the current seam
+      // 2) Compare gradient values in neighboring pixels in the next row and move to the pixel with the least gradient magnitude
+      //    Update 'col' index accordingly, and end iteration to move to next row
+      for (int j = 0; j < out->rows; j++) {
+        // Store current pixel in 2D array, at index [i][j]
+        Point pt; pt.x = col; pt.y = j;
+        Pixel *p = GetPixel(pt, out);
+        seams[i][j] = p;
+  
+        // Before getting gradient magnitude of neighbors, consider eligibility of the next pixel. 
+        // Do not get gradient magnitudes of boundary pixels.
+        unsigned char least_gradient = 255;
+        // If current pixel is in first or last column (boundary), default to right or left neighbor respectively. 
+        // ****(not necessary due to way the else statements are set up, but may make the code run faster as won't have to check)****
+        if (pt.x == 0) col += 1;
+        else if (pt.x == out->rows) col -= 1;
+        // Else, consider three neighbors (two for columns adjacent to boundary, since boundary pixels not considered)
+        else {
+          int temp_col = col; // temporary variable to keep track of column index of neighbor with lowest gradient
+          // Look at left neighbor
+          Point left_pt; left_pt.x = col-1; left_pt.y = j+1;
+          Pixel *left_pix = GetPixel(left_pt, out);
+          if (left_pt.x != 0) { // checking not a boundary pixel
+            if (left_pix->r < least_gradient) {
+              least_gradient = left_pix->r;
+              temp_col = col + 1;
+            }
+          }
+          // Look at below neighbor
+          Point below_pt; below_pt.x = col; below_pt.y = j+1;
+          Pixel *below_pix = GetPixel(below_pt, out);
+          if (below_pt.x != 0 || below_pt.x != out->rows) {
+            if (below_pix->r < least_gradient) {
+              least_gradient = below_pix->r;
+              temp_col = col;
+            }
+          }
+          // Look at right neighbor
+          Point right_pt; right_pt.x = col+1; below_pt.y = j+1;
+          Pixel *right_pix = GetPixel(right_pt, out);
+          if (right_pt.x != out->rows) {
+            if (right_pix->r < least_gradient) {
+              least_gradient = right_pix->r;
+              temp_col = col + 1;
+            }
+          }
+          // Update 'col' index to index stored in temp_col
+          col = temp_col;
+        }
       }
     }
+    // TO-DOs FOR FUTURE SELVES: LOOK AT COMMENTS
+    // 1) Now that seams array contains all potential seams, sum over each row to get the gradient energy of each seam
+    // 2) Identify seam with the lowest gradient energy
+    // 3) Allocate new image with one less column representing the carved out seam
+    // 4) Copy each pixel over to new image, unless pixel pointer == a seam pixel pointer. 
+    //    Probably best to increment pointer through the identified seam to be carved out.
+    // 5) Set out image to this new image
+    // 6) Repeat the loop until all seams are carved out
+    // 7) Transpose and do the same with rows
+
+    // IDEA: not recursion, but a helper function to perform the actual Seam Carve within the SeamCarving Function
+    // Function would take in an image, then return an image with one seam carved out, to make SeamCarving more readable
+    // ehhhhhhhhhhh let me think about this more, may be unnecessary...
+
+    // NOTE TO SELVES: don't forget to free memory after allocating new image memory
+    // i.e. if new image (with one less column for the carved out seam) is malloc-ed to Image * new, 
+    // free(out), then set Image * out = new
   }
-
- 
-
-
-
-
-  int new_rows = row_sf * im->row;
-  if (new_rows < 2) new_rows = 2;
-
-
 }
-
-*/
