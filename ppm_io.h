@@ -48,7 +48,7 @@ typedef struct _image {
  * @returns pointer to the Pixel within the image at the given x-y coordinates
  */
 Pixel * GetPixel(Point pt, Image * im) {
-  Pixel * p = im->data[pt.y * im->cols + pt.x];
+  Pixel * p = &(im->data[pt.y * im->cols + pt.x]);
   return p;
 }
 
