@@ -28,7 +28,7 @@ int ReadNum(FILE *fp) {
   /* confirm that we received a good file handle */
   assert(fp);
 
-  char ch;
+  int ch; // use int, which is in fact return type of fgetc to avoid casting of 255 to -1
   while((ch = fgetc(fp)) == '#') { // # marks a comment line
     while( ((ch = fgetc(fp)) != '\n') && ch != EOF ) {
       /* discard characters til end of line */
@@ -42,6 +42,7 @@ int ReadNum(FILE *fp) {
       // drop trailing whitespace
     }
     ungetc(ch, fp);
+    
     return val; // we got a value, so return it
   } else {
     fprintf(stderr, "Error:ppm_io - failed to read number from file\n");
