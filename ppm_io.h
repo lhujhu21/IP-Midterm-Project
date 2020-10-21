@@ -41,6 +41,17 @@ typedef struct _image {
   int cols;     // number of columns of Pixels
 } Image;
 
+/* GetPixel
+ * A function to take the x,y coordinates stored in a Point struct and returns the Pixel at that coordinate in a given image
+ * @parameter Point pt has the x and y coordinates of the desired pixel. Origin (0,0) is top left corner of image.
+ * @parameter Image * im is a pointer to the image in which the pixel is contained
+ * @returns pointer to the Pixel within the image at the given x-y coordinates
+ */
+Pixel * GetPixel(Point pt, Image * im) {
+  Pixel * p = im->data[pt.y * im->cols + pt.x];
+  return p;
+}
+
 /* ReadPPM
  * Read a PPM-formatted image from a file (assumes fp != NULL).
  * Returns the address of the heap-allocated Image struct it
