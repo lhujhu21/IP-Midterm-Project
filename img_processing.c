@@ -205,17 +205,24 @@ Image* Gradient(Image *im){
   return out;
 }
 
-/*
 // Seam carving function
 Image* SeamCarving(Image* im, float col_sf, float row_sf) {
-  Image* og = CreateImage(im->rows, im->cols); // Save a copy of the original Image struct
-  int new_cols = col_sf * im->cols;
-  if (new_cols < 2) new_cols = 2;
-  int d = im->cols - new_cols;
+  
+  // Calculate how many columns will be in the final seam-carved image
+  int final_cols = col_sf * im->cols;
+  if (final_cols < 2) final_cols = 2; // cap final column count at a minimum of 2
+  // Calculate d, the number of seams to be carved from the original image
+  int d = im->cols - final_cols;
+
+  // Pass image through Gradient function
+  Image * out = Gradient(im);
+
+  // For every iteration of this loop, carve out one seam and realloc memory for the seam-carved image until d seams are carved out
   for (int seam = 1; seam <= d; seam++) {
-    og = Gradient(og);
-    for (int i = 0; i < og->cols; i++) {
-      Pixel seams[og->cols][og->rows];
+    
+    // For every iteration of this loop, start at each column index 'col' 
+    for (int col = 0; col < out->cols; col++) {
+      Pixel seams[out->cols][out->rows];
       int col = i;
       for (int j = 0; j < og->rows; j++) {
 	seams[i][j] = og->data[j * og->cols + i];
