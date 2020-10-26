@@ -88,7 +88,9 @@ int CheckArgs(Image *im, char *op, int argc, char **argv, Args* values) {
 
 // Convert string to lowercase
 char* LowerCase(char* op) {
-  for (char* i = op; *i != '\0'; op++) *i = tolower(*i);
+  for (char* i = op; *i != '\0'; i++) {
+    *i = tolower(*i);
+  }
   return op;
 }
 
@@ -205,6 +207,8 @@ Image* Gradient(Image *im){
   return out;
 }
 
+
+/*
 // Seam carving function
 Image* SeamCarving(Image* im, float col_sf, float row_sf) {
   
@@ -304,4 +308,4 @@ int GetPotentialSeams(out, seams) {
   return &seams; // DOUBLE-CHECK AMPERSAND
 }
 
-
+*/
