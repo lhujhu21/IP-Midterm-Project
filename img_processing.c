@@ -139,8 +139,8 @@ Image* Binarize(Image* im, int threshold) {
 
 // Crop function
 Image* Crop(Image*im, int lcol, int lrow, int rcol, int rrow) {
-  // Create properly sized out image
-  Image* out = CreateImage(rrow - lrow + 1, rcol - lcol + 1);
+  // Create properly sized out image, img_cmp suggests crop is not inclusive? double check
+  Image* out = CreateImage(rrow - lrow, rcol - lcol);
   int out_idx = 0;
   // Loop through rows
   for (int i = lrow; i < rrow; i++) {
