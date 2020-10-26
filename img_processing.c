@@ -143,11 +143,11 @@ Image* Crop(Image*im, int lcol, int lrow, int rcol, int rrow) {
   Image* out = CreateImage(rrow - lrow + 1, rcol - lcol + 1);
   int out_idx = 0;
   // Loop through rows
-  for (int i = lrow; i <= rrow; i++) {
+  for (int i = lrow; i < rrow; i++) {
     // Set y-value for current point, will be same for all points in the row
     Point current; current.y = i;
     // Loop through columns
-    for (int j = lcol; i <= rcol; j++) {
+    for (int j = lcol; j < rcol; j++) {
       current.x = j;
       Pixel current_pix = * GetPixel(current, im);
       out->data[out_idx].r = current_pix.r;
