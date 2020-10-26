@@ -99,7 +99,7 @@ int main(int argc, char **argv) {
   else if (strcmp(op, "seam") == 0) {
     int check = CheckArgs(im, op, argc, argv, values);
     if (check != 0) return check;
-    out = Crop(im, values->col_sf, values->row_sf);
+    out = SeamCarve(im, values->col_sf, values->row_sf);
   }
    */
   else {
@@ -119,6 +119,10 @@ int main(int argc, char **argv) {
     fprintf(stderr, "Error: did not successfully write processed image to output\n");
     return 3;
   }
-  
+
+  free(im->data);
+  free(im);
+  free(out);
+  free(values);
   return 0;
 }
