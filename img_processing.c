@@ -121,11 +121,6 @@ Image* Grayscale(Image* im) {
 
 // Binarize function
 Image* Binarize(Image* im, int threshold) {
-  // Check validity of threshold
-  if (threshold <= 0 || threshold >= 255) {
-    fprintf(stderr, "Error: invalid threshold value %d\n", threshold);
-    return NULL;
-  }
   Image* out = Grayscale(im);
   for (int i = 0; i < (out->rows * out->cols); i++) {
     float gray = out->data[i].r;
@@ -144,11 +139,6 @@ Image* Binarize(Image* im, int threshold) {
 
 // Crop function
 Image* Crop(Image*im, int lcol, int lrow, int rcol, int rrow) {
-  // Check if corner values are valid
-  if (rcol > im->cols || rrow > im->rows || lcol > rcol || lrow > rrow ||
-      lcol < 0 || lrow < 0 ) {
-    fprintf(stderr, "Error: invalid corner values %d %d %d %d\n", lcol, lrow, rcol, rrow);
-  }
   Image* out = CreateImage(rrow - lrow + 1, rcol - lcol + 1);
   for (int i = lrow; i <= rrow; i++) {
     int new_row = i - lrow;
