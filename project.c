@@ -42,6 +42,7 @@ int main(int argc, char **argv) {
     fprintf(stderr, "Error: couldn't open input file: %s\n", argv[1]);
     return 2;
   }
+  
   FILE* output = fopen(argv[2], "wb");
   if (!output) {
     fprintf(stderr, "Error: couldn't open output file: %s\n", argv[2]);
@@ -49,11 +50,7 @@ int main(int argc, char **argv) {
   }
 
   // Create Image struct for input file and for output photo
-  Image* im = malloc(sizeof(Image));
-  if (!im) {
-    fprintf(stderr, "Error: image allocation failed\n");
-    return 8; // what error code does this fall under?
-  }
+  Image* im; 
   im = ReadPPM(input);
   if (im == NULL) {
     fprintf(stderr, "Error: input file cannot be read as PPM file\n");
@@ -65,6 +62,8 @@ int main(int argc, char **argv) {
   Args* values = malloc(sizeof(Args));
   if (!values) {
     fprintf(stderr, "Error: unable to allocate memory for arguments\n");
+    free(im->data);
+    free(im);
     return 8;
   }
   
@@ -104,11 +103,17 @@ int main(int argc, char **argv) {
    */
   else {
     fprintf(stderr, "Error: unsupported image processing command: %s\n", argv[4]);
+    free(im->data);
+    free(im);
+    free(values);
     return 5;
   }
 
   if (out == NULL) {
     // NULL pointer returned because unable to complete operation due to invalid arguments
+    free(im->data);
+    free(im);
+    free(values);
     return 7;
   }
   
@@ -120,9 +125,14 @@ int main(int argc, char **argv) {
     return 3;
   }
 
+  fclose(input);
+  fclose(output);
+
   free(im->data);
   free(im);
+  free(out->data);
   free(out);
+  
   free(values);
   return 0;
 }
