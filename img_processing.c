@@ -31,7 +31,7 @@ int CheckArgs(Image *im, char *op, int argc, char **argv, Args* values) {
   }
 
   // Check arguments for Crop function
-  if (strcmp(op, "binarize") == 0) {
+  if (strcmp(op, "crop") == 0) {
     // Incorrect number of values
     if (argc != 8) {
       fprintf(stderr, "Error: incorrect number of arguments supplied for crop function\n");
