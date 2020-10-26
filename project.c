@@ -29,6 +29,12 @@
 #include "img_processing.h" // image processing function headers
 
 int main(int argc, char **argv) {
+  // Make sure there is at least 4 arguments
+  if (argc < 4) {
+    fprintf(stderr, "Error: usage should be: ./project input.ppm output.ppm operation_type (optional additional arguments)\n");
+    return 6;
+  }
+
   // Open input and output files for binary reading/writing
   // Check for errors 
   FILE* input = fopen(argv[1], "rb");
@@ -70,36 +76,15 @@ int main(int argc, char **argv) {
   }
   // call Binarize
   else if (strcmp(op, "binarize") == 0) {
-    /*
-    int check = CheckArgs(im, op, arc, argv, values);
+    int check = CheckArgs(im, op, argc, argv, values);
     if (check != 0) return check;
-    */
-    int threshold; // Wouldn't need this anymore
-    if (sscanf(argv[4], " %d ", &threshold) != 1) {
-      fprintf(stderr, "Error: invalid argument for Binarize\n");
-      return 7;
-    }
-    if (argc < 5) {
-      fprintf(stderr, "Error: not enough arguments supplied for Binarize function\n");
-      return 6; 
-    }
-    out = Binarize(im, threshold); // change to values->threshold
+    out = Binarize(im, values->threshold); 
   }
   // call Crop
   else if (strcmp(op, "crop") == 0) {
-    if (argc < 8) {
-      fprintf(stderr, "Error: not enough arguments supplied for crop function\n");
-      return 6;
-    }
-    int lcol, lrow, rcol, rrow;
-    if (sscanf(argv[4], " %d ", &lcol) != 1 ||
-	      sscanf(argv[5], " %d ", &lrow) != 1 ||
-	      sscanf(argv[6], " %d ", &rcol) != 1 ||
-	      sscanf(argv[7], " %d ", &rrow) != 1) {
-      fprintf(stderr, "Error: invalid argument for Crop\n");
-      return 7;
-    }
-    out = Crop(im, lcol, lrow, rcol, rrow); // change to values->lcol, values->lrow, etc.
+    int check = CheckArgs(im, op, argc, argv, values);
+    if (check != 0) return check;
+    out = Crop(im, values->lcol, values->lrow, values->rcol, values->rrow); 
   }
   // call Transpose
   else if (strcmp(op, "transpose") == 0) {
@@ -110,7 +95,13 @@ int main(int argc, char **argv) {
     out = Gradient(im);
   }
   // call SeamCarve
-  
+  /*
+  else if (strcmp(op, "seam") == 0) {
+    int check = CheckArgs(im, op, argc, argv, values);
+    if (check != 0) return check;
+    out = Crop(im, values->col_sf, values->row_sf);
+  }
+   */
   else {
     fprintf(stderr, "Error: unsupported image processing command: %s\n", argv[4]);
     return 5;
