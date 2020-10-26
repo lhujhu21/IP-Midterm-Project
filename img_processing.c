@@ -139,15 +139,25 @@ Image* Binarize(Image* im, int threshold) {
 
 // Crop function
 Image* Crop(Image*im, int lcol, int lrow, int rcol, int rrow) {
+  // Create properly sized out image
   Image* out = CreateImage(rrow - lrow + 1, rcol - lcol + 1);
+  int out_idx = 0;
+  // Loop through rows
   for (int i = lrow; i <= rrow; i++) {
-    int new_row = i - lrow;
+    // Set y-value for current point, will be same for all points in the row
+    Point current; current.y = i;
+    // Loop through columns
     for (int j = lcol; i <= rcol; j++) {
-      // [row][col] indexing is [i * out->cols + j] 
-      int new_col = j - lcol;
-      out->data[new_row * out->cols + new_col] = im->data[i * out->cols + j];
+      current.x = j;
+      Pixel current_pix = * GetPixel(current, im);
+      out->data[out_idx].r = current_pix.r;
+      out->data[out_idx].g = current_pix.g;
+      out->data[out_idx].b = current_pix.b;
+      out_idx++;
+
+      //out->data[out_idx] = *GetPixel(current, im);
     }
-  } 
+  }
   return out;
 }
 
