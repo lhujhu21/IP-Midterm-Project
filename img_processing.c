@@ -154,8 +154,6 @@ Image* Crop(Image*im, int lcol, int lrow, int rcol, int rrow) {
       out->data[out_idx].g = current_pix.g;
       out->data[out_idx].b = current_pix.b;
       out_idx++;
-
-      //out->data[out_idx] = *GetPixel(current, im);
     }
   }
   return out;
@@ -205,9 +203,6 @@ Image* Gradient(Image *im){
       p->b = gradient;
     }
   }
-  // Free grayscale image struct before returning out image struct
-  free(gray->data);
-  free(gray);
   return out;
 }
 
