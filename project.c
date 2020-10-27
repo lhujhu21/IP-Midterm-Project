@@ -46,6 +46,7 @@ int main(int argc, char **argv) {
   FILE* output = fopen(argv[2], "wb");
   if (!output) {
     fprintf(stderr, "Error: couldn't open output file: %s\n", argv[2]);
+    fclose(input);
     return 3;
   }
 
@@ -54,6 +55,8 @@ int main(int argc, char **argv) {
   im = ReadPPM(input);
   if (im == NULL) {
     fprintf(stderr, "Error: input file cannot be read as PPM file\n");
+    fclose(input);
+    fclose(output);
     return 4;
   }
   Image* out; // Struct to store processed photo
@@ -64,6 +67,8 @@ int main(int argc, char **argv) {
     fprintf(stderr, "Error: unable to allocate memory for arguments\n");
     free(im->data);
     free(im);
+    fclose(input);
+    fclose(output);
     return 8;
   }
   
@@ -106,6 +111,8 @@ int main(int argc, char **argv) {
     free(im->data);
     free(im);
     free(values);
+    fclose(input);
+    fclose(output);
     return 5;
   }
 
@@ -114,6 +121,8 @@ int main(int argc, char **argv) {
     free(im->data);
     free(im);
     free(values);
+    fclose(input);
+    fclose(output);
     return 7;
   }
   
@@ -122,6 +131,13 @@ int main(int argc, char **argv) {
 
   if (num != out->rows * out->cols) {
     fprintf(stderr, "Error: did not successfully write processed image to output\n");
+    free(im->data);
+    free(im);
+    free(out->data);
+    free(out);
+    free(values);
+    fclose(input);
+    fclose(output);
     return 3;
   }
 
