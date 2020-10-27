@@ -9,8 +9,8 @@
 #include "ppm_io.h"
 
 int CheckArgs(Image *im, int argc, char **argv, Args* values) {
-  char op = LowerCase(argv[3]);
-  if (op == NULL) return NULL; // argv[3] does not exist
+  char *op = LowerCase(argv[3]);
+  if (op == NULL) return 8; // argv[3] does not exist
   // Check number of arguments for grayscale, transpose, and gradient
   if (strcmp(op, "grayscale") == 0 || strcmp(op, "transpose") == 0 ||
       strcmp(op, "gradient") == 0) {
@@ -250,28 +250,39 @@ Image* Gradient(Image *im){
 
 // Seam carving function
 Image* Seam(Image* im, float col_sf, float row_sf) {
-  
-  // Calculate how many columns will be in the final seam-carved image
-  int final_cols = col_sf * im->cols;
-  if (final_cols < 2) final_cols = 2; // cap final column count at a minimum of 2
-  // Calculate d, the number of seams to be carved from the original image
-  int d = im->cols - final_cols;
-
   // Pass image through Gradient function
-  Image * out = Gradient(im);
+  Image* out = Gradient(im);
   if (!out) {
     // Gradient image creation failed, return null to main
     return NULL;
   }
 
   // Repeat this loop twice -- once to carve out column seams, once to carve out row seams
+  // If seam_carve == 0, then carving out columns. Else, carving out rows.
   for (int seam_carve = 0; seam_carve < 2; seam_carve++) {
-
+    // Calculate how many seams will be carved out, based on columns or rows, and store in d
+    int d = 0;
+    if (seam_carve == 0) {
+      // Calculate how many columns will be in the final seam-carved image
+      int final_cols = col_sf * im->cols;
+      if (final_cols < 2) final_cols = 2; // cap final column count at a minimum of 2
+      // Calculate d, the number of column seams to be carved from the original image
+      d = im->cols - final_cols;
+    }
+    else {
+      // Calculate how many rows will be in the final seam-carved image
+      int final_rows = row_sf * im->rows;
+      if (final_rows < 2) final_rows = 2;
+      d = im->rows - final_rows; // number of row seams to be carved out
+    }
     // For every iteration of this loop, carve out one seam and realloc memory for the seam-carved image until d seams are carved out
-    for (int seam = 1; seam <= d; seam++) {
-      // Create an array of points, where each point stores the coordinate location of one pixel in the seam
+    for (int seam = 0; seam < d; seam++) {
+      // Create a dynamically-allocated 2D array of Pixel pointers, where each pointer points to a pixel in the seam
       // Each potential seam is one row, with out->rows number of pixels in each seam. 
-      Pixel* seams[out->cols][out->rows]; 
+      Pixel*** seams = malloc(sizeof(Pixel**) * out->cols); 
+      for (int i = 0; i < out->cols; i++) {
+        seams[i] = malloc(sizeof(Pixel*) * out->rows);
+      }
       MapSeams(out, seams);
 
       // Sum over each row in seams to get the gradient energy of each seam
@@ -314,16 +325,25 @@ Image* Seam(Image* im, float col_sf, float row_sf) {
         carved->data[pix].b = cur->b;
       }
 
+      // Free seams array
+      for (int i = 0; i < out->cols; i++) {
+        free(seams[i]);
+      }
+      free(seams);
+
       // Update the new "out" image as the carved image
       out = carved;
       free(carved->data);
       free(carved);
+
+      
     }
 
     // Once all column seams have been carved out, transpose image and repeat with rows
     // On second iteration, once all row seams have been carved out, transpose image back to original
     out = Transpose(out);
   }
+  return out;
 }
 
 // TO-DOs FOR FUTURE SELVES: LOOK AT COMMENTS
@@ -341,7 +361,7 @@ Image* Seam(Image* im, float col_sf, float row_sf) {
     // free(out), then set Image * out = new
 
 // Helper function used in SeamCarve function to map out potential seams in an image
-void MapSeams(Image* out, Pixel* seams[out->cols][out->rows]) {
+void MapSeams(Image* out, Pixel*** seams) {
   // For every iteration of this loop, start at each column index 'col' to map a potential seam
   for (int i = 0; i < out->cols; i++) {
     // Create a 2D array of pixel pointers to store seams, each starting with a pixel in unique column index and row 0
