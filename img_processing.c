@@ -257,31 +257,86 @@ Image* SeamCarving(Image* im, float col_sf, float row_sf) {
 
   // Pass image through Gradient function
   Image * out = Gradient(im);
+  if (!out) {
+    // Gradient image creation failed, return null to main
+    return NULL;
+  }
 
-  // For every iteration of this loop, carve out one seam and realloc memory for the seam-carved image until d seams are carved out
-  for (int seam = 1; seam <= d; seam++) {
-    // Create an array of points, where each point stores the coordinate location of one pixel in the seam
-    // Each potential seam is one row, with out->rows number of pixels in each seam. 
-    Pixel* seams[out->cols][out->rows]; 
-    MapSeams(out, seams);
+  // Repeat this loop twice -- once to carve out column seams, once to carve out row seams
+  for (int seam_carve = 0; seam_carve < 2; seam_carve++) {
 
-    // TO-DOs FOR FUTURE SELVES: LOOK AT COMMENTS
-    // 1) Now that seams array contains all potential seams, sum over each row to get the gradient energy of each seam
-    // 2) Identify seam with the lowest gradient energy
-    // 3) Allocate new image with one less column representing the carved out seam
-    // 4) Copy each pixel over to new image, unless pixel pointer == a seam pixel pointer. 
+    // For every iteration of this loop, carve out one seam and realloc memory for the seam-carved image until d seams are carved out
+    for (int seam = 1; seam <= d; seam++) {
+      // Create an array of points, where each point stores the coordinate location of one pixel in the seam
+      // Each potential seam is one row, with out->rows number of pixels in each seam. 
+      Pixel* seams[out->cols][out->rows]; 
+      MapSeams(out, seams);
+
+      // Sum over each row in seams to get the gradient energy of each seam
+      // Store row number of seam with lowest gradient energy in variable lowest_seam
+      int lowest_seam = 0;
+      int lowest_sum = 0;
+      for (int seam_row = 0; seam_row < out->cols ; seam_row++) {
+        // Find the sum of one row
+        int sum = 0;
+        for (int seam_pix = 0; seam_pix < out->rows; seam_pix++) {
+          sum += seams[seam_row][seam_pix]->r;
+        }
+        // If lowest sum so far is found, update lowest_sum and lowest_seam index
+        if (sum < lowest_sum) {
+          lowest_sum = sum;
+          lowest_seam = seam_row;
+        }
+      }
+      
+      // Allocate new image with lowest_seam carved out (one less column)
+      Image* carved = CreateImage(out->rows, out->cols - 1);
+      if (!carved) {
+        // New carved image creation failed, return null to main
+        return NULL;
+      }
+
+      // Copy each pixel over to new image, unless pixel pointer is in the row of lowest_seam
+      // Loop through every pixel in the old image (out). If seam_pix encountered, do not iterate and continue to next pixel to copy
+      int seam_pix = 0; // index through pixels in the seam once they are identified
+      for (int pix = 0; pix < carved->rows * carved->cols; pix++) {
+        Pixel *cur = &(out->data[pix]);
+        // If addresses are equivalent, then seam pixel has been encountered. Skip!
+        if (cur == seams[lowest_seam][seam_pix]) {
+          seam_pix++; // update seam_pix to be checked
+          cur = &(out->data[pix]); // update current pixel -- impossible to encounter two consecutive seam pixels
+        }
+        // Copy pixel to new image (carved)
+        carved->data[pix].r = cur->r;
+        carved->data[pix].g = cur->g;
+        carved->data[pix].b = cur->b;
+      }
+
+      // Update the new "out" image as the carved image
+      out = carved;
+      free(carved->data);
+      free(carved);
+    }
+
+    // Once all column seams have been carved out, transpose image and repeat with rows
+    // On second iteration, once all row seams have been carved out, transpose image back to original
+    out = Transpose(out);
+  }
+}
+
+// TO-DOs FOR FUTURE SELVES: LOOK AT COMMENTS
+    // 1) DONE! Now that seams array contains all potential seams, sum over each row to get the gradient energy of each seam
+    // 2) DONE! Identify seam with the lowest gradient energy
+    // 3) DONE! Allocate new image with one less column representing the carved out seam
+    // 4) DONE! Copy each pixel over to new image, unless pixel pointer == a seam pixel pointer. 
     //    Probably best to increment pointer through the identified seam to be carved out.
-    // 5) Set out image to this new image
-    // 6) Repeat the loop until all seams are carved out
-    // 7) Transpose and do the same with rows
-
-    // IDEA: not recursion, but a helper function to perform the actual Seam Carve within the SeamCarving Function
+    // 5) DONE! Set out image to this new image
+    // 6) DONE! Repeat the loop until all seams are carved out
+    // 7) DONE! Transpose and do the same with rows
 
     // NOTE TO SELVES: don't forget to free memory after allocating new image memory
     // i.e. if new image (with one less column for the carved out seam) is malloc-ed to Image * new, 
     // free(out), then set Image * out = new
-  }
-}
 
 // Helper function used in SeamCarve function to map out potential seams in an image
 void MapSeams(Image* out, Pixel* seams[out->cols][out->rows]) {
