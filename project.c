@@ -89,11 +89,9 @@ int main(int argc, char **argv) {
     out = Gradient(im);
   }
   // call SeamCarve
-  /*
   else if (strcmp(op, "seam") == 0) {
-    out = SeamCarve(im, values.col_sf, values.row_sf);
+    out = Seam(im, values.col_sf, values.row_sf);
   }
-   */
   else {
     fprintf(stderr, "Error: unsupported image processing command: %s\n", argv[4]);
     free(im->data);

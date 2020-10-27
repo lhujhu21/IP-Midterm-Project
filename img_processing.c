@@ -247,7 +247,7 @@ Image* Gradient(Image *im){
 }
 
 // Seam carving function
-Image* SeamCarving(Image* im, float col_sf, float row_sf) {
+Image* Seam(Image* im, float col_sf, float row_sf) {
   
   // Calculate how many columns will be in the final seam-carved image
   int final_cols = col_sf * im->cols;
