@@ -346,7 +346,10 @@ Image* Seam(Image* im, float col_sf, float row_sf) {
 
     // Once all column seams have been carved out, transpose image and repeat with rows
     // On second iteration, once all row seams have been carved out, transpose image back to original
-    out = Transpose(out);
+    Image* transposed = Transpose(out);
+    free(out->data); free(out);
+    out = transposed;
+    free(transposed->data); free(transposed);
   }
   return out;
 }
