@@ -46,6 +46,7 @@ int main(int argc, char **argv) {
   FILE* output = fopen(argv[2], "wb");
   if (!output) {
     fprintf(stderr, "Error: couldn't open output file: %s\n", argv[2]);
+    fclose(input);
     return 3;
   }
 
@@ -54,19 +55,17 @@ int main(int argc, char **argv) {
   im = ReadPPM(input);
   if (im == NULL) {
     fprintf(stderr, "Error: input file cannot be read as PPM file\n");
+    fclose(input);
+    fclose(output);
     return 4;
   }
   Image* out; // Struct to store processed photo
 
-  // Create Args struct for image processing arguments
-  Args* values = malloc(sizeof(Args));
-  if (!values) {
-    fprintf(stderr, "Error: unable to allocate memory for arguments\n");
-    free(im->data);
-    free(im);
-    return 8;
-  }
-  
+  // Create Args struct for image processing arguments, check arguments for validity
+  Args values;
+  int check = CheckArgs(im, op, argc, argv, &values);
+  if (check != 0) return check; // If function does not return 0, return error code
+
   // Match image processing operation
   char *op = LowerCase(argv[3]); // used helper function defined in img_processing.h
   // call Grayscale
@@ -75,15 +74,11 @@ int main(int argc, char **argv) {
   }
   // call Binarize
   else if (strcmp(op, "binarize") == 0) {
-    int check = CheckArgs(im, op, argc, argv, values);
-    if (check != 0) return check;
-    out = Binarize(im, values->threshold); 
+    out = Binarize(im, values.threshold); 
   }
   // call Crop
   else if (strcmp(op, "crop") == 0) {
-    int check = CheckArgs(im, op, argc, argv, values);
-    if (check != 0) return check;
-    out = Crop(im, values->lcol, values->lrow, values->rcol, values->rrow); 
+    out = Crop(im, values.lcol, values.lrow, values.rcol, values.rrow); 
   }
   // call Transpose
   else if (strcmp(op, "transpose") == 0) {
@@ -96,25 +91,25 @@ int main(int argc, char **argv) {
   // call SeamCarve
   /*
   else if (strcmp(op, "seam") == 0) {
-    int check = CheckArgs(im, op, argc, argv, values);
-    if (check != 0) return check;
-    out = SeamCarve(im, values->col_sf, values->row_sf);
+    out = SeamCarve(im, values.col_sf, values.row_sf);
   }
    */
   else {
     fprintf(stderr, "Error: unsupported image processing command: %s\n", argv[4]);
     free(im->data);
     free(im);
-    free(values);
+    fclose(input);
+    fclose(output);
     return 5;
   }
 
   if (out == NULL) {
-    // NULL pointer returned because unable to complete operation due to invalid arguments
+    // NULL pointer returned because unable to complete operation due to lack of memory for output image
     free(im->data);
     free(im);
-    free(values);
-    return 7;
+    fclose(input);
+    fclose(output);
+    return 8;
   }
   
   // Write image to file
@@ -122,6 +117,12 @@ int main(int argc, char **argv) {
 
   if (num != out->rows * out->cols) {
     fprintf(stderr, "Error: did not successfully write processed image to output\n");
+    free(im->data);
+    free(im);
+    free(out->data);
+    free(out);
+    fclose(input);
+    fclose(output);
     return 3;
   }
 
@@ -133,6 +134,5 @@ int main(int argc, char **argv) {
   free(out->data);
   free(out);
   
-  free(values);
   return 0;
 }
