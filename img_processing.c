@@ -8,7 +8,9 @@
 #include "img_processing.h"
 #include "ppm_io.h"
 
-int CheckArgs(Image *im, char *op, int argc, char **argv, Args* values) {
+int CheckArgs(Image *im, int argc, char **argv, Args* values) {
+  char op = LowerCase(argv[3]);
+  if (op == NULL) return NULL; // argv[3] does not exist
   // Check number of arguments for grayscale, transpose, and gradient
   if (strcmp(op, "grayscale") == 0 || strcmp(op, "transpose") == 0 ||
       strcmp(op, "gradient") == 0) {

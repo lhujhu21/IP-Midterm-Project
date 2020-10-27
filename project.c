@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
 
   // Create Args struct for image processing arguments, check arguments for validity
   Args values;
-  int check = CheckArgs(im, op, argc, argv, &values);
+  int check = CheckArgs(im, argc, argv, &values);
   if (check != 0) return check; // If function does not return 0, return error code
 
   // Match image processing operation

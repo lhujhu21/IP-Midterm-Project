@@ -29,7 +29,7 @@ typedef struct _args {
  * @parameter values pointer to Args struct to store read values
  * @return 0 for no errors, 6 for incorrect # of args, 7 for invalid args
  */
-int CheckArgs(Image* im, char *op, int argc, char **argv, Args* values);
+int CheckArgs(Image* im, int argc, char **argv, Args* values);
 
 
 /**
