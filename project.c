@@ -126,9 +126,10 @@ int main(int argc, char **argv) {
 
   fclose(input);
   fclose(output);
-  
-  free(im->data);
-  free(im);   
+  if (strcmp(op, "seam") != 0) {
+    free(im->data);
+    free(im); 
+  }
   free(out->data);
   free(out);
   
