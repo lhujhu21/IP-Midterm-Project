@@ -275,14 +275,15 @@ Image* Seam(Image* im, float col_sf, float row_sf) {
       if (final_rows < 2) final_rows = 2;
       d = im->rows - final_rows; // number of row seams to be carved out
     }
+
     // For every iteration of this loop, carve out one seam and realloc memory for the seam-carved image until d seams are carved out
     for (int seam = 0; seam < d; seam++) {
-      // Create a dynamically-allocated 2D array of Pixel pointers, where each pointer points to a pixel in the seam
+      // Create a dynamically-allocated 2D array of Point structs, where each Point stores the coordinates of a pixel in the seam
       // Each potential seam is one row, with out->rows number of pixels in each seam, and out->cols numbers of potential seams.
-      Pixel*** seams = malloc(sizeof(Pixel**) * out->cols); 
+      Point** seams = malloc(sizeof(Point*) * out->cols); 
       // if (!seams) return NULL;
       for (int i = 0; i < out->cols; i++) {
-        seams[i] = malloc(sizeof(Pixel*) * out->rows);
+        seams[i] = malloc(sizeof(Point) * out->rows);
         // if (!seams[i]) return NULL;
       }
       MapSeams(out, seams);
@@ -295,7 +296,8 @@ Image* Seam(Image* im, float col_sf, float row_sf) {
         // Find the sum of one row
         int sum = 0;
         for (int seam_pix = 0; seam_pix < out->rows; seam_pix++) {
-          sum += seams[seam_row][seam_pix]->r;
+          Pixel* pix = GetPixel(seams[seam_row][seam_pix], out);
+          sum += pix->r;
         }
         // If lowest sum so far is found, update lowest_sum and lowest_seam index
         if (sum < lowest_sum) {
@@ -313,18 +315,21 @@ Image* Seam(Image* im, float col_sf, float row_sf) {
 
       // Copy each pixel over to new image, unless pixel pointer is in the row of lowest_seam
       // Loop through every pixel in the old image (out). If seam_pix encountered, do not iterate and continue to next pixel to copy
-      int seam_pix = 0; // index through pixels in the seam once they are identified
-      for (int pix = 0; pix < carved->rows * carved->cols; pix++) {
-        Pixel *cur = &(out->data[pix]);
-        // If addresses are equivalent, then seam pixel has been encountered. Skip!
-        if (cur == seams[lowest_seam][seam_pix]) {
-          seam_pix++; // update seam_pix to be checked
-          cur = &(out->data[pix]); // update current pixel -- impossible to encounter two consecutive seam pixels
+      int seam_pix_idx = 0; // index through pixels in the seam once they are identified
+      int new_pix = 0; 
+      for (int out_pix = 0; out_pix < out->rows * out->cols; out_pix++) {
+        Pixel *cur = &(out->data[out_pix]);
+        // If coordinate of seam pixel encountered, skip!
+        Point seam_pix = seams[lowest_seam][seam_pix_idx];
+        if (out_pix == seam_pix.y * out->cols + seam_pix.x) {
+          seam_pix_idx++; out_pix++; // update seam_pix to be checked and skip over pixel in old image
+          continue;
         }
         // Copy pixel to new image (carved)
-        carved->data[pix].r = cur->r;
-        carved->data[pix].g = cur->g;
-        carved->data[pix].b = cur->b;
+        carved->data[new_pix].r = cur->r;
+        carved->data[new_pix].g = cur->g;
+        carved->data[new_pix].b = cur->b;
+        new_pix++;
       }
 
       // Free seams array
@@ -334,9 +339,9 @@ Image* Seam(Image* im, float col_sf, float row_sf) {
       free(seams);
 
       // Update the new "out" image as the carved image
+      free(out->data); free(out);
       out = carved;
-      free(carved->data);
-      free(carved);
+      free(carved->data); free(carved);
     }
 
     // Once all column seams have been carved out, transpose image and repeat with rows
@@ -361,7 +366,7 @@ Image* Seam(Image* im, float col_sf, float row_sf) {
     // free(out), then set Image * out = new
 
 // Helper function used in SeamCarve function to map out potential seams in an image
-void MapSeams(Image* out, Pixel*** seams) {
+void MapSeams(Image* out, Point** seams) {
   // For every iteration of this loop, start at each column index 'col' to map a potential seam
   for (int i = 0; i < out->cols; i++) {
     // Create a 2D array of pixel pointers to store seams, each starting with a pixel in unique column index and row 0
@@ -374,16 +379,16 @@ void MapSeams(Image* out, Pixel*** seams) {
     for (int j = 0; j < out->rows; j++) {
       // Store current pixel in 2D array, at index [i][j]
       Point pt; pt.x = col; pt.y = j;
-      Pixel *p = GetPixel(pt, out);
-      seams[i][j] = p;
+      //Pixel *p = GetPixel(pt, out);
+      seams[i][j] = pt;
   
       // Before getting gradient magnitude of neighbors, consider eligibility of the next pixel. 
       // Do not get gradient magnitudes of boundary pixels.
       unsigned char least_gradient = 255;
-      // If current pixel is in first or last column (boundary), default to right or left neighbor respectively. 
+      // If top pixel is in first or last column (boundary), default to right or left neighbor respectively. 
       // ****(not necessary due to way the else statements are set up, but may make the code run faster as won't have to check)****
       if (pt.x == 0) col += 1;
-      else if (pt.x == out->rows - 1) col -= 1;
+      else if (pt.x == out->cols - 1) col -= 1;
       // If second-to-last row, connect automatically to below pixel
       else if (pt.y == out->rows - 2) col = col;
       // Else, consider three neighbors (two for columns adjacent to boundary, since boundary pixels not considered)
@@ -393,7 +398,7 @@ void MapSeams(Image* out, Pixel*** seams) {
         // Look at right neighbor
         Point right_pt; right_pt.x = col+1; right_pt.y = j+1;
         Pixel *right_pix = GetPixel(right_pt, out);
-        if (right_pt.x != out->rows - 1) { // checking not a boundary pixel
+        if (right_pt.x != out->cols - 1) { // checking not a boundary pixel
           if (right_pix->r < least_gradient) {
             least_gradient = right_pix->r;
             temp_col = col + 1;
@@ -411,7 +416,7 @@ void MapSeams(Image* out, Pixel*** seams) {
         // Look at middle neighbor
         Point mid_pt; mid_pt.x = col; mid_pt.y = j+1;
         Pixel *mid_pix = GetPixel(mid_pt, out);
-        if (mid_pt.x != 0 || mid_pt.x != out->rows - 1) { // checking not a boundary pixel
+        if (mid_pt.x != 0 || mid_pt.x != out->cols - 1) { // checking not a boundary pixel
           if (mid_pix->r < least_gradient) {
             least_gradient = mid_pix->r;
             temp_col = col;

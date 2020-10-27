@@ -103,6 +103,6 @@ Image* Seam(Image* im, float col_sf, float row_sf);
  * @parameter seams 2D array storing pointers to pixels mapped out as part of a seam
  * Does not return anything, modifies seams array as pass-by-reference, and fills seams 2D array with fully mapped seams
  */
-void MapSeams(Image* out, Pixel*** seams);
+void MapSeams(Image* out, Point** seams);
 
 #endif
