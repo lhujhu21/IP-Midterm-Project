@@ -17,6 +17,9 @@
 // GetPixel returns pixel pointer at x,y coordinates in image
 Pixel * GetPixel(Point pt, Image * im) {
  Pixel * p = &(im->data[pt.y * im->cols + pt.x]);
+  if (pt.x < 0 || pt.y < 0 || pt.x >= im->cols || pt.y >= im->rows) {
+    printf("Error: out of range\n");
+  }
   return p;
 }
 
