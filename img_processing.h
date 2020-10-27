@@ -96,4 +96,13 @@ Image* Gradient(Image *im);
  * @return pointer to seam carved image. 
  */
 Image* SeamCarving(Image* im, float col_sf, float row_sf);
+
+/**
+ * Helper function for SeamCarving function.
+ * @parameter out Image pointer for current iteration of image being seam carved
+ * @parameter seams 2D array storing pointers to pixels mapped out as part of a seam
+ * Does not return anything, modifies seams array as pass-by-reference, and fills seams 2D array with fully mapped seams
+ */
+void MapSeams(Image* out, Pixel* seams[out->cols][out->rows]);
+
 #endif

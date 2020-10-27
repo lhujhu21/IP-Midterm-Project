@@ -109,14 +109,14 @@ Image* CreateImage(int rows, int cols) {
   Image* new = malloc(sizeof(Image));
   if (!new) {
     fprintf(stderr, "Error: output image allocation failed\n");
-    return null;
+    return NULL;
   }
   new->rows = rows;
   new->cols = cols;
   new->data = malloc(sizeof(Pixel) * rows * cols);
   if (!new->data) {
     fprintf(stderr, "Error: output pixel allocation failed\n");
-    return null;
+    return NULL;
   }
   return new;
 }
@@ -127,7 +127,7 @@ Image* Grayscale(Image* im) {
   Image* out = CreateImage(im->rows, im->cols);
   if (!out) {
     // Output image allocation failed, return null to calling function
-    return null;
+    return NULL;
   }
   for (int i = 0; i < (im->rows * im->cols); i++) {
     Pixel p = im->data[i];
@@ -144,7 +144,7 @@ Image* Binarize(Image* im, int threshold) {
   Image* out = Grayscale(im);
   if (!out) {
     // Output image allocation failed, return null to main
-    return null;
+    return NULL;
   }
   for (int i = 0; i < (out->rows * out->cols); i++) {
     float gray = out->data[i].r;
@@ -167,7 +167,7 @@ Image* Crop(Image*im, int lcol, int lrow, int rcol, int rrow) {
   Image* out = CreateImage(rrow - lrow, rcol - lcol);
   if (!out) {
     // Output image allocation failed, return null to main
-    return null;
+    return NULL;
   }
   int out_idx = 0;
   // Loop through rows
@@ -192,7 +192,7 @@ Image* Transpose(Image* im) {
   Image* out = CreateImage(im->cols, im->rows);
   if (!out) {
     // Output image allocation failed, return null to main
-    return null;
+    return NULL;
   }
   for (int i = 0; i < im->rows; i++) {
     for (int j = 0; j < im->cols; j++) {
@@ -208,12 +208,12 @@ Image* Gradient(Image *im){
   Image* out = CreateImage(im->rows, im->cols);
   if (!out) {
     // Output image allocation failed, return null to main
-    return null;
+    return NULL;
   }
   Image* gray = Grayscale(im);
   if (!gray) {
     // Grayscale image creation failed, return null to main
-    return null;
+    return NULL;
   }
   // Compute magnitude of gradient at each pixel
   for (int i = 0; i < im->rows; i++) {
@@ -228,8 +228,8 @@ Image* Gradient(Image *im){
         Pixel p_top = gray->data[(i - 1) * gray->cols + j];
         Pixel p_bot = gray->data[(i + 1) * gray->cols + j];
         // Calculate gradient in x and y direction
-        float x_grad = (p_right.r - p_left.r)/2;
-        float y_grad = (p_top.r - p_bot.r)/2;
+        int x_grad = (p_right.r - p_left.r)/2;
+        int y_grad = (p_top.r - p_bot.r)/2;
         // Take absolute value
         if (x_grad < 0) x_grad *= -1;
         if (y_grad < 0) y_grad *= -1;
@@ -246,8 +246,6 @@ Image* Gradient(Image *im){
   return out;
 }
 
-
-/*
 // Seam carving function
 Image* SeamCarving(Image* im, float col_sf, float row_sf) {
   
@@ -262,9 +260,10 @@ Image* SeamCarving(Image* im, float col_sf, float row_sf) {
 
   // For every iteration of this loop, carve out one seam and realloc memory for the seam-carved image until d seams are carved out
   for (int seam = 1; seam <= d; seam++) {
-    // Each potential seam is one row, with out->rows number of pixels in each seam
-    Pixel * seams[out->cols][out->rows]; 
-    seams = GetPotentialSeams(out, seams);
+    // Create an array of points, where each point stores the coordinate location of one pixel in the seam
+    // Each potential seam is one row, with out->rows number of pixels in each seam. 
+    Pixel* seams[out->cols][out->rows]; 
+    MapSeams(out, seams);
 
     // TO-DOs FOR FUTURE SELVES: LOOK AT COMMENTS
     // 1) Now that seams array contains all potential seams, sum over each row to get the gradient energy of each seam
@@ -284,67 +283,68 @@ Image* SeamCarving(Image* im, float col_sf, float row_sf) {
   }
 }
 
-int GetPotentialSeams(out, seams) {
+// Helper function used in SeamCarve function to map out potential seams in an image
+void MapSeams(Image* out, Pixel* seams[out->cols][out->rows]) {
   // For every iteration of this loop, start at each column index 'col' to map a potential seam
-    for (int i = 0; i < out->cols; i++) {
-      // Create a 2D array of pixel pointers to store seams, each starting with a pixel in unique column index and row 0
-      int col = i; // index variable to keep track of column position of seam as it is carved out. 
+  for (int i = 0; i < out->cols; i++) {
+    // Create a 2D array of pixel pointers to store seams, each starting with a pixel in unique column index and row 0
+    int col = i; // index variable to keep track of column position of seam as it is carved out. 
       
-      // For every iteration of this loop, do two things: 
-      // 1) Store the current pixel into 2D array for the current seam
-      // 2) Compare gradient values in neighboring pixels in the next row and move to the pixel with the least gradient magnitude
-      //    Update 'col' index accordingly, and end iteration to move to next row
-      for (int j = 0; j < out->rows; j++) {
-        // Store current pixel in 2D array, at index [i][j]
-        Point pt; pt.x = col; pt.y = j;
-        Pixel *p = GetPixel(pt, out);
-        seams[i][j] = p;
+    // For every iteration of this loop, do two things: 
+    // 1) Store the current pixel into 2D array for the current seam
+    // 2) Compare gradient values in neighboring pixels in the next row and move to the pixel with the least gradient magnitude
+    //    Update 'col' index accordingly, and end iteration to move to next row
+    for (int j = 0; j < out->rows; j++) {
+      // Store current pixel in 2D array, at index [i][j]
+      Point pt; pt.x = col; pt.y = j;
+      Pixel *p = GetPixel(pt, out);
+      seams[i][j] = p;
   
-        // Before getting gradient magnitude of neighbors, consider eligibility of the next pixel. 
-        // Do not get gradient magnitudes of boundary pixels.
-        unsigned char least_gradient = 255;
-        // If current pixel is in first or last column (boundary), default to right or left neighbor respectively. 
-        // ****(not necessary due to way the else statements are set up, but may make the code run faster as won't have to check)****
-        if (pt.x == 0) col += 1;
-        else if (pt.x == out->rows) col -= 1;
-        // If second-to-last row, connect automatically to below pixel
-        else if (pt.y == out->rows - 1) col = col;
-        // Else, consider three neighbors (two for columns adjacent to boundary, since boundary pixels not considered)
-        else {
-          int temp_col = col; // temporary variable to keep track of column index of neighbor with lowest gradient
-          // Look at left neighbor
-          Point left_pt; left_pt.x = col-1; left_pt.y = j+1;
-          Pixel *left_pix = GetPixel(left_pt, out);
-          if (left_pt.x != 0) { // checking not a boundary pixel
-            if (left_pix->r < least_gradient) {
-              least_gradient = left_pix->r;
-              temp_col = col + 1;
-            }
+      // Before getting gradient magnitude of neighbors, consider eligibility of the next pixel. 
+      // Do not get gradient magnitudes of boundary pixels.
+      unsigned char least_gradient = 255;
+      // If current pixel is in first or last column (boundary), default to right or left neighbor respectively. 
+      // ****(not necessary due to way the else statements are set up, but may make the code run faster as won't have to check)****
+      if (pt.x == 0) col += 1;
+      else if (pt.x == out->rows - 1) col -= 1;
+      // If second-to-last row, connect automatically to below pixel
+      else if (pt.y == out->rows - 2) col = col;
+      // Else, consider three neighbors (two for columns adjacent to boundary, since boundary pixels not considered)
+      // For ties, give priority to middle, then left, then right
+      else {
+        int temp_col = col; // temporary variable to keep track of column index of neighbor with lowest gradient
+        // Look at right neighbor
+        Point right_pt; right_pt.x = col+1; right_pt.y = j+1;
+        Pixel *right_pix = GetPixel(right_pt, out);
+        if (right_pt.x != out->rows - 1) { // checking not a boundary pixel
+          if (right_pix->r < least_gradient) {
+            least_gradient = right_pix->r;
+            temp_col = col + 1;
           }
-          // Look at below neighbor
-          Point below_pt; below_pt.x = col; below_pt.y = j+1;
-          Pixel *below_pix = GetPixel(below_pt, out);
-          if (below_pt.x != 0 || below_pt.x != out->rows) {
-            if (below_pix->r < least_gradient) {
-              least_gradient = below_pix->r;
-              temp_col = col;
-            }
-          }
-          // Look at right neighbor
-          Point right_pt; right_pt.x = col+1; below_pt.y = j+1;
-          Pixel *right_pix = GetPixel(right_pt, out);
-          if (right_pt.x != out->rows) {
-            if (right_pix->r < least_gradient) {
-              least_gradient = right_pix->r;
-              temp_col = col + 1;
-            }
-          }
-          // Update 'col' index to index stored in temp_col
-          col = temp_col;
         }
+        // Look at left neighbor
+        Point left_pt; left_pt.x = col-1; left_pt.y = j+1;
+        Pixel *left_pix = GetPixel(left_pt, out);
+        if (left_pt.x != 0) { // checking not a boundary pixel
+          if (left_pix->r < least_gradient) {
+            least_gradient = left_pix->r;
+            temp_col = col + 1;
+          }
+        }
+        // Look at middle neighbor
+        Point mid_pt; mid_pt.x = col; mid_pt.y = j+1;
+        Pixel *mid_pix = GetPixel(mid_pt, out);
+        if (mid_pt.x != 0 || mid_pt.x != out->rows - 1) { // checking not a boundary pixel
+          if (mid_pix->r < least_gradient) {
+            least_gradient = mid_pix->r;
+            temp_col = col;
+          }
+        }
+        // Update 'col' index to index stored in temp_col
+        col = temp_col;
       }
     }
-  return &seams; // DOUBLE-CHECK AMPERSAND
+  }
 }
 
-*/
+
