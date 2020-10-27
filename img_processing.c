@@ -175,22 +175,23 @@ Image* Transpose(Image* im) {
 // Gradient function
 Image* Gradient(Image *im){
   // Pass image through Grayscale function
-  Image* out = Grayscale(im);
+  Image* out = CreateImage(im->rows, im->cols);
+  Image* gray = Grayscale(im);
   // Compute magnitude of gradient at each pixel
   for (int i = 0; i < im->rows; i++) {
     for (int j = 0; j < im->cols; j++) {
       // For pixels on the boundary, set gradient to 0
       unsigned char gradient = 0;
       // For pixels not on the boundary, calculate gradient
-      if (i != 0 && i != out->rows && j != 0 && j != out->cols) {
+      if (i != 0 && i != (gray->rows - 1) && j != 0 && j != (gray->cols - 1)) {
         // Get grayscale values for adjacent pixels
-        Pixel p_right = out->data[i * out->cols + j + 1];
-        Pixel p_left = out->data[i * out->cols + j - 1];
-        Pixel p_top = out->data[(i-1) * out->cols + j];
-        Pixel p_bot = out->data[(i+1) * out->cols + j];
+        Pixel p_right = gray->data[i * gray->cols + j + 1];
+        Pixel p_left = gray->data[i * gray->cols + j - 1];
+        Pixel p_top = gray->data[(i - 1) * gray->cols + j];
+        Pixel p_bot = gray->data[(i + 1) * gray->cols + j];
         // Calculate gradient in x and y direction
-        float x_grad = 0.5*(p_right.r - p_left.r);
-        float y_grad = 0.5*(p_top.r - p_bot.r);
+        float x_grad = (p_right.r - p_left.r)/2;
+        float y_grad = (p_top.r - p_bot.r)/2;
         // Take absolute value
         if (x_grad < 0) x_grad *= -1;
         if (y_grad < 0) y_grad *= -1;
@@ -204,6 +205,9 @@ Image* Gradient(Image *im){
       p->b = gradient;
     }
   }
+  // Free grayscale image struct before returning out image struct
+  free(gray->data);
+  free(gray);
   return out;
 }
 
