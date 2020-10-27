@@ -98,9 +98,17 @@ char* LowerCase(char* op) {
 Image* CreateImage(int rows, int cols) {
   // Allocate memory for new struct
   Image* new = malloc(sizeof(Image));
+  if (!new) {
+    fprintf(stderr, "Error: output image allocation failed\n");
+    return null;
+  }
   new->rows = rows;
   new->cols = cols;
   new->data = malloc(sizeof(Pixel) * rows * cols);
+  if (!new->data) {
+    fprintf(stderr, "Error: output pixel allocation failed\n");
+    return null;
+  }
   return new;
 }
 
@@ -108,7 +116,10 @@ Image* CreateImage(int rows, int cols) {
 Image* Grayscale(Image* im) {
   // Allocate memory for output
   Image* out = CreateImage(im->rows, im->cols);
-
+  if (!out) {
+    // Output image allocation failed, return null to calling function
+    return null;
+  }
   for (int i = 0; i < (im->rows * im->cols); i++) {
     Pixel p = im->data[i];
     unsigned char gray = 0.3 * p.r + 0.59 * p.g + 0.11 * p.b;
@@ -122,6 +133,10 @@ Image* Grayscale(Image* im) {
 // Binarize function
 Image* Binarize(Image* im, int threshold) {
   Image* out = Grayscale(im);
+  if (!out) {
+    // Output image allocation failed, return null to main
+    return null;
+  }
   for (int i = 0; i < (out->rows * out->cols); i++) {
     float gray = out->data[i].r;
     if (gray < threshold) {
@@ -141,6 +156,10 @@ Image* Binarize(Image* im, int threshold) {
 Image* Crop(Image*im, int lcol, int lrow, int rcol, int rrow) {
   // Create properly sized out image, img_cmp suggests crop is not inclusive? double check
   Image* out = CreateImage(rrow - lrow, rcol - lcol);
+  if (!out) {
+    // Output image allocation failed, return null to main
+    return null;
+  }
   int out_idx = 0;
   // Loop through rows
   for (int i = lrow; i < rrow; i++) {
@@ -154,8 +173,6 @@ Image* Crop(Image*im, int lcol, int lrow, int rcol, int rrow) {
       out->data[out_idx].g = current_pix.g;
       out->data[out_idx].b = current_pix.b;
       out_idx++;
-
-      //out->data[out_idx] = *GetPixel(current, im);
     }
   }
   return out;
@@ -164,6 +181,10 @@ Image* Crop(Image*im, int lcol, int lrow, int rcol, int rrow) {
 // Transpose function
 Image* Transpose(Image* im) {
   Image* out = CreateImage(im->cols, im->rows);
+  if (!out) {
+    // Output image allocation failed, return null to main
+    return null;
+  }
   for (int i = 0; i < im->rows; i++) {
     for (int j = 0; j < im->cols; j++) {
       out->data[j * out->cols + i] = im->data[i * im->cols + j];
@@ -176,7 +197,15 @@ Image* Transpose(Image* im) {
 Image* Gradient(Image *im){
   // Pass image through Grayscale function
   Image* out = CreateImage(im->rows, im->cols);
+  if (!out) {
+    // Output image allocation failed, return null to main
+    return null;
+  }
   Image* gray = Grayscale(im);
+  if (!gray) {
+    // Grayscale image creation failed, return null to main
+    return null;
+  }
   // Compute magnitude of gradient at each pixel
   for (int i = 0; i < im->rows; i++) {
     for (int j = 0; j < im->cols; j++) {

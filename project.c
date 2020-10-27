@@ -104,12 +104,12 @@ int main(int argc, char **argv) {
   }
 
   if (out == NULL) {
-    // NULL pointer returned because unable to complete operation due to invalid arguments
+    // NULL pointer returned because unable to complete operation due to lack of memory for output image
     free(im->data);
     free(im);
     fclose(input);
     fclose(output);
-    return 7;
+    return 8;
   }
   
   // Write image to file
