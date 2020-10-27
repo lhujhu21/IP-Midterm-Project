@@ -278,10 +278,12 @@ Image* Seam(Image* im, float col_sf, float row_sf) {
     // For every iteration of this loop, carve out one seam and realloc memory for the seam-carved image until d seams are carved out
     for (int seam = 0; seam < d; seam++) {
       // Create a dynamically-allocated 2D array of Pixel pointers, where each pointer points to a pixel in the seam
-      // Each potential seam is one row, with out->rows number of pixels in each seam. 
+      // Each potential seam is one row, with out->rows number of pixels in each seam, and out->cols numbers of potential seams.
       Pixel*** seams = malloc(sizeof(Pixel**) * out->cols); 
+      // if (!seams) return NULL;
       for (int i = 0; i < out->cols; i++) {
         seams[i] = malloc(sizeof(Pixel*) * out->rows);
+        // if (!seams[i]) return NULL;
       }
       MapSeams(out, seams);
 
@@ -289,7 +291,7 @@ Image* Seam(Image* im, float col_sf, float row_sf) {
       // Store row number of seam with lowest gradient energy in variable lowest_seam
       int lowest_seam = 0;
       int lowest_sum = 0;
-      for (int seam_row = 0; seam_row < out->cols ; seam_row++) {
+      for (int seam_row = 0; seam_row < out->cols; seam_row++) {
         // Find the sum of one row
         int sum = 0;
         for (int seam_pix = 0; seam_pix < out->rows; seam_pix++) {
@@ -335,8 +337,6 @@ Image* Seam(Image* im, float col_sf, float row_sf) {
       out = carved;
       free(carved->data);
       free(carved);
-
-      
     }
 
     // Once all column seams have been carved out, transpose image and repeat with rows
