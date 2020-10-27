@@ -9,6 +9,15 @@
 #include "ppm_io.h"
 
 int CheckArgs(Image *im, char *op, int argc, char **argv, Args* values) {
+  // Check number of arguments for grayscale, transpose, and gradient
+  if (strcmp(op, "grayscale") == 0 || strcmp(op, "transpose") == 0 ||
+      strcmp(op, "gradient") == 0) {
+    if (argc > 4) {
+      fprintf(stderr, "Error: too many arguments supplied for %s\n", op);
+      return 6;
+    }
+  }
+
   // Check arguments for Binarize function
   if (strcmp(op, "binarize") == 0) {
     // Incorrect number of values -- returns 6 in main
