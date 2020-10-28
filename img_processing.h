@@ -10,6 +10,7 @@
  * A struct to store all possible image processing arguments.
  */
 typedef struct _args {
+  char *op;
   int threshold; // Binarize
   int lcol; // Crop
   int lrow; // Crop

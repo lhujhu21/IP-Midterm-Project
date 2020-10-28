@@ -10,7 +10,8 @@
 
 int CheckArgs(Image *im, int argc, char **argv, Args* values) {
   char *op = LowerCase(argv[3]);
-  if (op == NULL) return 8; // argv[3] does not exist
+  if (op == NULL) return 7; // argv[3] is not valid
+  else values->op = op;
   // Check number of arguments for grayscale, transpose, and gradient
   if (strcmp(op, "grayscale") == 0 || strcmp(op, "transpose") == 0 ||
       strcmp(op, "gradient") == 0) {

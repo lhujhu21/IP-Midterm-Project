@@ -1,0 +1,410 @@
+commit 9a6b968e64d349139df30495cbce36f64b25492f
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Wed Oct 28 10:51:43 2020 -0400
+
+    added image copy for Seam carving function
+
+commit eae256166e62abe197530205aa10a31088afc23e
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Tue Oct 27 20:55:43 2020 -0400
+
+    added own documentation in README file
+
+commit 2e7feed09bcc67e7f1c17fe1a301ffb187eac104
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Tue Oct 27 16:29:52 2020 -0400
+
+    WORKING DEBUGGED CODE
+
+commit 459e990d05f1d38b99083fbfef9e36b66620c408
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Tue Oct 27 15:52:44 2020 -0400
+
+    updated partially debugged scripts
+
+commit 7565f819b60c0399de869713a327c44697432c85
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Tue Oct 27 12:05:47 2020 -0400
+
+    updated Seam
+
+commit 0c792d118864caece1d948beb57d393633ae5f48
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Tue Oct 27 11:58:33 2020 -0400
+
+    changed seams to hold Points instead of Pixel pointers
+
+commit 1539480c2b1db9fbbbef6e8c25bb40fd7d6d587b
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Tue Oct 27 00:41:31 2020 -0400
+
+    updated Seam function -- need to debug
+
+commit 3d6638ba8145d76edea5379b45889dc4fd5e1b60
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Tue Oct 27 00:23:26 2020 -0400
+
+    dynamically allocated seams array in Seam function
+
+commit e9d4a2c06ce17874120579e5ee2e4cc6411ab4b0
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Mon Oct 26 23:39:27 2020 -0400
+
+    changed declaration of CheckArgs function to exclude op as a separate argument
+
+commit 85d5a888f07caa0e4c7f2641c3af1dd567f79288
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Mon Oct 26 23:30:06 2020 -0400
+
+    standardized name of seam carving function to 'Seam'
+
+commit 7314f93db18c425ee9732939e2e3611fe3619aa9
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Mon Oct 26 23:27:07 2020 -0400
+
+    finished draft implementation of Seam carving function
+
+commit 3e2e82a67320e4ab2c53e464364232836321549b
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Mon Oct 26 22:36:10 2020 -0400
+
+    finished MapSeams helper function, changed x_grad and y_grad in Crop function to int
+
+commit bea89cf62bd2c6833d20b674d5304a4721e5ba03
+Merge: 4607ec6 d83a2c0
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Mon Oct 26 21:57:03 2020 -0400
+
+    Merge branch 'master' of https://github.com/jhu-ip/2020-fall-midterm-lhu15-mwu69
+    
+    Combine changes to img_processing.c Gradient function
+
+commit 4607ec6444393026d08daeceebe88a4c47d2ee6a
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Mon Oct 26 21:56:54 2020 -0400
+
+    checked the push
+
+commit d83a2c08ef690ec64581904363706e23fdeee76f
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Mon Oct 26 21:49:43 2020 -0400
+
+    Added max args check for grayscale, transpose, and gradient in CheckArgs
+
+commit 512775001cf6309fa88a5584b4926af93c3521a9
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Mon Oct 26 21:44:16 2020 -0400
+
+    Added error checking/reporting for memory allocation in CreateImage
+
+commit d190130d41156c4a38d28bef1b5b1eb287fdda06
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Mon Oct 26 21:29:50 2020 -0400
+
+    Changed values (Args struct) so it is no longer a pointer, put call to CheckArgs at beginning instead of with each op identification
+
+commit 7ae4340d39d0e12dd2ae123d64f7fd7345a3db15
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Mon Oct 26 21:22:10 2020 -0400
+
+    fclose() and free() as necessary before returning errors
+
+commit a392ee8a32f325bfc487bbf172bcf03dd2277d14
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Mon Oct 26 20:27:07 2020 -0400
+
+    Debugged grayscale: implemented out and gray, switched from multiplying by 0.5 to division by 2
+
+commit 94b8aad4da7106d5352219a62fdfc8cbca15b2de
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Mon Oct 26 19:53:50 2020 -0400
+
+    Changed Crop output image dimensions
+
+commit 684b6bb5db933a46d3b6c3b0b17e9ab81d1eb6ba
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Mon Oct 26 19:49:32 2020 -0400
+
+    Debugged crop function and fixed loop through cols
+
+commit ffbc1fbb0e3471d65b07885835a8e418bb694878
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Mon Oct 26 12:46:31 2020 -0400
+
+    updated Crop function with implementation using Point struct
+
+commit 4c2b15f45320b03e309a01b6286f0bea967b2e4d
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Mon Oct 26 11:05:52 2020 -0400
+
+    fixed general valgrind issues
+
+commit f0ddb3bae178a2f1d3cbf9f15d4043056e4068bb
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Mon Oct 26 01:54:33 2020 -0400
+
+    Images from first round of tests!
+
+commit 670ebb030f71998ad7fff7dacfbd6bfb08bdd278
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Mon Oct 26 01:36:48 2020 -0400
+
+    Removed excess argument checks from Binarize and Crop functions
+
+commit 0eb6ebcb7a0ef73610c4d695ddcbb11c6cf61994
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Mon Oct 26 01:10:40 2020 -0400
+
+    Fixed typo in CheckArgs
+
+commit 5ca61a7e1839c5b94522eccfffe0fa8a18c35401
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Mon Oct 26 00:44:42 2020 -0400
+
+    First successful attempt!
+
+commit c0afb78ef30cbaef59833a6e5e979ac5e1f23ac6
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Mon Oct 26 00:43:02 2020 -0400
+
+    Fixed some typos
+
+commit 103980b9238ef8e213c7c589f1e62c604f596978
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Mon Oct 26 00:17:59 2020 -0400
+
+    Fixed infinite loop in LowerCase()
+
+commit f850282135e302fa596f064ba1bd006191246833
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Mon Oct 26 00:17:19 2020 -0400
+
+    Implemented CheckArgs for each operation and minimum arguments check
+
+commit 73d28242f9e74f0cca15e9fe7b38b86c8e24397a
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Mon Oct 26 00:16:25 2020 -0400
+
+    Added -g for debugging
+
+commit 0c297d118c7b8d0de9a2fff9e756f8aa9e04cbfb
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Wed Oct 21 15:20:13 2020 -0400
+
+    added debugged code from public repo for ReadNum function
+
+commit 589d2efd989658cbc5bdfc662e63bf08d3513d03
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Wed Oct 21 11:18:03 2020 -0400
+
+    started implementation of GetPotentialSeams to streamline SeamCarving function
+
+commit c5addd81eb23a467f2fa3f0ca4cac870f70eeb6e
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Wed Oct 21 11:17:36 2020 -0400
+
+    freed malloc-ed memory
+
+commit c722be20015aa89e23cf620a468e7ca775d88282
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Wed Oct 21 11:17:12 2020 -0400
+
+    put implementation of GetPixel() into ppm_io.c
+
+commit 76d26df83ae687bea0a2a9c7bef2ca4595297365
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Wed Oct 21 01:48:23 2020 -0400
+
+    finished seams array population in SeamCarving function and added comments and a to-do list for rest of function
+
+commit a667a1c312cb5f075d914144bd05430204972f6c
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Wed Oct 21 00:40:14 2020 -0400
+
+    commented and added to implementation of Seam Carving function
+
+commit a0a27aa60a6f25f22de0ad95726b8b37a8870a89
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Wed Oct 21 00:32:26 2020 -0400
+
+    fixed pointer issue in GetPixel function
+
+commit f5c98d713d6213cda10f0d0892c0237e2a6a6928
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Wed Oct 21 00:31:23 2020 -0400
+
+    deleted wonky test file result
+
+commit b929893528ebc2d061a7031e3ade56c6e6b83f7e
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Wed Oct 21 00:28:53 2020 -0400
+
+    added implementation in ppm_io.h for a GetPixel() function
+
+commit 5c1d739cb8fcbac2805da04ed44f4f640c0338fb
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Tue Oct 20 14:56:10 2020 -0400
+
+    comment changes
+
+commit be7f37f7ff8dd82f6e3084968a36b118bcd5d2c7
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Tue Oct 20 14:41:31 2020 -0400
+
+    debugged syntax problems, current version compiles with no warnings or errors
+
+commit b4328145117f50985e58d8a2309c3a20c0551eb0
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Tue Oct 20 14:01:13 2020 -0400
+
+    updated header/args for CheckArgs function to include image pointer
+
+commit 07f0a5f7d2595fd38105316726360613174fa5cf
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Tue Oct 20 13:41:27 2020 -0400
+
+    updated Makefile with project compilation commands
+
+commit 4c536280aebae9d6c88f91d8e802cfb5b3c2a034
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Tue Oct 20 00:05:44 2020 -0400
+
+    Added to Seam Carving function
+
+commit 931ca2289596c8ffcef6a2c1b8084712e8543e72
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Mon Oct 19 22:55:58 2020 -0400
+
+    Started implementing Seam Carving
+
+commit 6a0029d7470f896630134b17fdba3ea781ca3e02
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Mon Oct 19 21:05:34 2020 -0400
+
+    finished implementation of Gradient function
+
+commit 305ae3b8cceacbfd0950e93e0872a5bc651cc62d
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Mon Oct 19 12:03:38 2020 -0400
+
+    updated main function with gradient option
+
+commit 840e4ee8b5238a561c7a6a92bf30a59c6aa69629
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Mon Oct 19 12:03:01 2020 -0400
+
+    started implementation for gradient function
+
+commit 549f56289b1f2ea6ae6d4b3b07166bebbd24d04c
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Sat Oct 17 22:08:36 2020 -0400
+
+    Fixed compiler errors
+
+commit b96de9ad3fbe35f5664bfc01988fc1823e466fb2
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Sat Oct 17 17:18:17 2020 -0400
+
+    Added sample code for using CheckArgs function
+
+commit 2048b8bd7c4745fcd080b73692a6726682ac89c3
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Sat Oct 17 17:17:35 2020 -0400
+
+    Rewrote CheckArgs function with new Args struct
+
+commit 5b28059139d125e4dbf511807afe138f3212f38f
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Sat Oct 17 17:05:16 2020 -0400
+
+    Added Args struct and modified CheckArgs function definition
+
+commit 0da87820504933dcfb136b7ab8180cc9fa947fb5
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Fri Oct 16 14:38:32 2020 -0400
+
+    added error checking in main, started prototype of CheckArgs function
+
+commit e285ad7b732ffb13b124b8f8d6d5f675d02f1e46
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Fri Oct 16 14:36:59 2020 -0400
+
+    fixed struct issues in implementations
+
+commit 792abf2ee4d4685ef165fc1b5aa85c79d532d822
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Fri Oct 16 14:36:20 2020 -0400
+
+    added file to keep track of questions that come up
+
+commit 1e37b3da6fdeba2903daa9e70079dd72ec75e96e
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Fri Oct 16 11:53:27 2020 -0400
+
+    added implementation and header for Transpose
+
+commit ede29cdd7d9562f1a5eb6bd6b0d4544d20ec648a
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Fri Oct 16 11:35:33 2020 -0400
+
+    added implementation for Crop
+
+commit 447e08aaa534939398a8133a8910f517ddf7fe12
+Author: Morgan Wu <mwu69@jhu.edu>
+Date:   Fri Oct 16 10:46:57 2020 -0400
+
+    added function header for Crop
+
+commit 8768cbc89e69780fc76e47fee6549f4a131ff72d
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Thu Oct 15 23:52:13 2020 -0400
+
+    Added names and JHED
+
+commit 02662a09adba69d28e8bc5e3cb1f3136e4cc9f5c
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Thu Oct 15 23:51:50 2020 -0400
+
+    Added function declarations for Grayscale(), Binarize(), and CreateImage()
+
+commit 5c69cf78f519a844884f03551533e18fdd8c60d5
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Thu Oct 15 23:38:24 2020 -0400
+
+    Adjusted function names to match standard
+
+commit bfb41c7bd983aa89dda07a366ade42361033cc9d
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Thu Oct 15 23:37:57 2020 -0400
+
+    Added basic main() for testing purposes
+
+commit 2db6d421da3ea69e3d301e29c34f13febc74c6c4
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Thu Oct 15 21:54:05 2020 -0400
+
+    Implemented binarize function
+
+commit 752e4028919c827bf9ad84727265668dcfbf28b9
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Thu Oct 15 21:30:15 2020 -0400
+
+    Implemented createImage function to create new Image structs
+
+commit a7528f0a79c0de50480592351bb99cdd624eca54
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Thu Oct 15 21:25:33 2020 -0400
+
+    Implemented grayscale function
+
+commit 850567a5065e75e944453bca4281de290d9cda1d
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Thu Oct 15 21:13:12 2020 -0400
+
+    Created img_processing file and header file
+
+commit 4f537d65622878cdb030512af624b0823645bcb3
+Author: lhujhu21 <lhujhu21@gmail.com>
+Date:   Thu Oct 15 17:59:06 2020 -0400
+
+    Added starter files

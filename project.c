@@ -55,8 +55,7 @@ int main(int argc, char **argv) {
   im = ReadPPM(input);
   if (im == NULL) {
     fprintf(stderr, "Error: input file cannot be read as PPM file\n");
-    fclose(input);
-    fclose(output);
+    fclose(input); fclose(output);
     return 4;
   }
   Image* out; // Struct to store processed photo
@@ -67,7 +66,8 @@ int main(int argc, char **argv) {
   if (check != 0) return check; // If function does not return 0, return error code
 
   // Match image processing operation
-  char *op = LowerCase(argv[3]); // used helper function defined in img_processing.h
+  char *op = values.op;
+
   // call Grayscale
   if (strcmp(op, "grayscale") == 0) {
     out = Grayscale(im);
@@ -94,19 +94,15 @@ int main(int argc, char **argv) {
   }
   else {
     fprintf(stderr, "Error: unsupported image processing command: %s\n", argv[4]);
-    free(im->data);
-    free(im);
-    fclose(input);
-    fclose(output);
+    free(im->data); free(im);
+    fclose(input); fclose(output);
     return 5;
   }
 
   if (out == NULL) {
     // NULL pointer returned because unable to complete operation due to lack of memory for output image
-    free(im->data);
-    free(im);
-    fclose(input);
-    fclose(output);
+    free(im->data); free(im);
+    fclose(input); fclose(output);
     return 8;
   }
   
@@ -115,12 +111,9 @@ int main(int argc, char **argv) {
 
   if (num != out->rows * out->cols) {
     fprintf(stderr, "Error: did not successfully write processed image to output\n");
-    free(im->data);
-    free(im);
-    free(out->data);
-    free(out);
-    fclose(input);
-    fclose(output);
+    free(im->data); free(im);
+    free(out->data); free(out);
+    fclose(input); fclose(output);
     return 3;
   }
 
@@ -129,10 +122,8 @@ int main(int argc, char **argv) {
   fclose(output);
 
   // Free image structs
-  free(im->data);
-  free(im); 
-  free(out->data);
-  free(out);
+  free(im->data); free(im); 
+  free(out->data); free(out);
   
   return 0;
 }
