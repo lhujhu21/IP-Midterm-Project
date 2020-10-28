@@ -1,17 +1,37 @@
-### You may remove the below notes and write your own README here
+Midterm Project, Intermediate Programming Fall 2020
+Lucy Hu, lhu15
+Morgan Wu, mwu69
 
-Note 1: a program called img_cmp is zipped with the starter code, which you could use it to compare your output and the expected result.  Its usage is:
+This program is an image processing program with a command-line-based user interface, with support for 7 image processing operations:
+(1) Grayscale
+(2) Binarize
+(3) Crop
+(4) Transpose
+(5) Gradient
+(6) Seam Carve
 
-    ./img_cmp <PPM file1> <PPM file2> [tolerance=0]
+A number of functions are declared in two files, ppm_io.h and img_processing.h. 
 
-The first and second arguments are the two PPM files to be compared.  The third one is a tolerance for comparing the pixel value difference, which should be an integer value.
+In ppm_io.h:
+- All ppm file processing operations included in the public repo, including ReadPPM to read in binary images, WritePPM to write out binary images, and structs for Pixel, Point, and Image.
+- GetPixel: a helper function that takes a point and an image, and returns a pointer to the pixel at the x,y coordinates of the point in the image.
+- Args: a defined struct type that stores the user-supplied arguments for an operation once they have been verified
 
-Note 2: a source file, checkerbaord.c, is provided as a reference to write a PPM file.  You should not need to modify the file. You can compile the checkerboard program using 
+In img_processing.h:
+Helper Functions: 
+1.  CheckArgs: helper function to check the user-provided arguments for validity and presence by storing argument values into a struct termed values based off the user-specified operation.
+2.  LowerCase: helper function to remove the case-sensitivity of user-entered image processing operation
+3.  CreateImage: helper function to dynamically allocate a new Image struct of a certain size
+4.  MapSeams: helper function for Seam (seam carving) function that maps out the potential seams in an image and stores them in a dynamically-allocated 2D array
 
-  make checkerboard
+Image Processing Functions:
+5.  Grayscale: returns an image whose pixel values are converted to grayscale
+6.  Binarize: returns an image whose pixel values are binarized based on a threshold
+7.  Crop: returns an image cropped to the user's specifications
+8.  Transpose: returns a transposed image
+9.  Gradient: returns an image where the gradient is calculated and set for each pixel
+10. Seam: returns a seam-carved image 
 
-and its usage is:
+Notes: 
+1. 
 
-  ./checkerboard [output filename=checkerboard.ppm] [cols=7] [rows=5] [square size=50 pixels]
-
-All arguments are optional.  If you provide them, the first one should be the output filename, second and thrid specify the number of cols and rows of the checkerboard, and the last one defines the square sizes. If you run it as default, you should generate the same checkerboard.ppm as the one in the results folder. You can use img_cmp to compare them.
