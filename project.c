@@ -124,12 +124,13 @@ int main(int argc, char **argv) {
     return 3;
   }
 
+  // Close file pointers
   fclose(input);
   fclose(output);
-  if (strcmp(op, "seam") != 0) {
-    free(im->data);
-    free(im); 
-  }
+
+  // Free image structs
+  free(im->data);
+  free(im); 
   free(out->data);
   free(out);
   

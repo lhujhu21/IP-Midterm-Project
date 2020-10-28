@@ -5,8 +5,6 @@
 CC=gcc
 CFLAGS=-std=c99 -pedantic -Wall -Wextra -g
 
-## TODO: Write your own Makefile commands to link and compile your project as well as the cleanup
-
 project: project.o img_processing.o ppm_io.o
 	$(CC) $(CFLAGS) -o project project.o img_processing.o ppm_io.o 
 

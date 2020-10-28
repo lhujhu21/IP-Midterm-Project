@@ -253,14 +253,12 @@ Image* Gradient(Image *im){
 // Seam carving function
 Image* Seam(Image* im, float col_sf, float row_sf) {
   // Make a copy of image
-  /*
-  Image* im = CreateImage(im->rows, im->cols);
-  for (int i = 0; i < im->rows * im->cols; i++) {
-    im->data[i].r = im->data[i].r;
-    im->data[i].g = im->data[i].g;
-    im->data[i].b = im->data[i].b;
+  Image* out = CreateImage(im->rows, im->cols);
+  for (int i = 0; i < im->rows; i++) {
+    for (int j = 0; j < im->cols; j++) {
+      out->data[i * out->cols + j] = im->data[i * im->cols + j];
+    }
   }
-  */
   // Repeat this loop twice -- once to carve out column seams, once to carve out row seams
   // If seam_carve == 0, then carving out columns. Else, carving out rows.
   for (int seam_carve = 0; seam_carve < 2; seam_carve++) {
@@ -268,47 +266,47 @@ Image* Seam(Image* im, float col_sf, float row_sf) {
     int d = 0;
     if (seam_carve == 0) {
       // Calculate how many columns will be in the final seam-carved image
-      int final_cols = col_sf * im->cols;
+      int final_cols = col_sf * out->cols;
       if (final_cols < 2) final_cols = 2; // cap final column count at a minimum of 2
       // Calculate d, the number of column seams to be carved from the original image
-      d = im->cols - final_cols;
+      d = out->cols - final_cols;
     }
     else {
       // Calculate how many rows will be in the final seam-carved image
-      int final_rows = row_sf * im->cols; // use cols since image is transposed
+      int final_rows = row_sf * out->cols; // use cols since image is transposed
       if (final_rows < 2) final_rows = 2;
-      d = im->cols - final_rows; // number of row seams to be carved out
+      d = out->cols - final_rows; // number of row seams to be carved out
     }
 
     // For every iteration of this loop, carve out one seam and realloc memory for the seam-carved image until d seams are carved out
     for (int seam = 0; seam < d; seam++) {
       // Pass image through Gradient function
-      Image* out = Gradient(im);
-      if (!out) {
+      Image* grad = Gradient(out);
+      if (!grad) {
         // Gradient image creation failed, return null to main
         return NULL;
       }
       // Create a dynamically-allocated 2D array of Point structs, where each Point stores the coordinates of a pixel in the seam
       // Each potential seam is one row, with out->rows number of pixels in each seam, and out->cols numbers of potential seams.
-      Point** seams = malloc(sizeof(Point*) * out->cols); 
+      Point** seams = malloc(sizeof(Point*) * grad->cols); 
       if (!seams) return NULL;
-      for (int i = 0; i < out->cols; i++) {
-        seams[i] = malloc(sizeof(Point) * out->rows);
+      for (int i = 0; i < grad->cols; i++) {
+        seams[i] = malloc(sizeof(Point) * grad->rows);
         if (!seams[i]) return NULL;
       }
-      MapSeams(out, seams);
+      MapSeams(grad, seams);
 
       // Sum over each row in seams to get the gradient energy of each seam
       // Store row number of seam with lowest gradient energy in variable lowest_seam
       int lowest_seam = 0;
       // Highest possible gradient energy is 255 for a pixel, for an entire seam, multiply by number of pixels in a seam
-      unsigned int lowest_sum = 255 * out->rows;
+      unsigned int lowest_sum = 255 * grad->rows;
 
-      for (int seam_row = 0; seam_row < out->cols; seam_row++) {
+      for (int seam_row = 0; seam_row < grad->cols; seam_row++) {
         // Find the sum of one row
         unsigned int sum = 0;
-        for (int seam_pix = 0; seam_pix < out->rows; seam_pix++) {
-          Pixel* pix = GetPixel(seams[seam_row][seam_pix], out);
+        for (int seam_pix = 0; seam_pix < grad->rows; seam_pix++) {
+          Pixel* pix = GetPixel(seams[seam_row][seam_pix], grad);
           sum += pix->r;
         }
         // If lowest sum so far is found, update lowest_sum and lowest_seam index
@@ -319,7 +317,7 @@ Image* Seam(Image* im, float col_sf, float row_sf) {
       }
       
       // Allocate new image with lowest_seam carved out (one less column)
-      Image* carved = CreateImage(im->rows, im->cols - 1);
+      Image* carved = CreateImage(out->rows, out->cols - 1);
       if (!carved) {
         printf("Carved image failed\n");
         // New carved image creation failed, return null to main
@@ -330,15 +328,15 @@ Image* Seam(Image* im, float col_sf, float row_sf) {
       // Loop through every pixel in the old image (out). If seam_pix encountered, do not iterate and continue to next pixel to copy
       int seam_pix_idx = 0; // index through pixels in the seam once they are identified
       int new_pix = 0; 
-      for (int im_pix = 0; im_pix < im->rows * im->cols; im_pix++) {
-        Pixel *cur = &(im->data[im_pix]);
+      for (int out_pix = 0; out_pix < out->rows * out->cols; out_pix++) {
+        Pixel *cur = &(out->data[out_pix]);
         // If coordinate of seam pixel encountered, skip!
         Point seam_pix = seams[lowest_seam][seam_pix_idx];
-        if (seam_pix_idx >= out->rows) {
+        if (seam_pix_idx >= grad->rows) {
           printf("Error: invalid indexing into seam\n");
         }
-        if (im_pix == seam_pix.y * out->cols + seam_pix.x) {
-          if (seam_pix_idx < out->rows - 1) { // if last seam pixel is checked, no need to update
+        if (out_pix == seam_pix.y * grad->cols + seam_pix.x) {
+          if (seam_pix_idx < grad->rows - 1) { // if last seam pixel is checked, no need to update
             seam_pix_idx++; // update seam_pix to be checked and skip over pixel in old image
           }
           continue;
@@ -357,18 +355,18 @@ Image* Seam(Image* im, float col_sf, float row_sf) {
       free(seams);
 
       // Update image as the new carved image
+      free(grad->data); free(grad);
       free(out->data); free(out);
-      free(im->data); free(im);
-      im = carved;
+      out = carved;
     }
 
     // Once all column seams have been carved out, transpose image and repeat with rows
     // On second iteration, once all row seams have been carved out, transpose image back to original
-    Image* transposed = Transpose(im);
-    free(im->data); free(im);
-    im = transposed;
+    Image* transposed = Transpose(out);
+    free(out->data); free(out);
+    out = transposed;
   }
-  return im;
+  return out;
 }
 
 // Helper function used in SeamCarve function to map out potential seams in an image
@@ -436,5 +434,3 @@ void MapSeams(Image* out, Point** seams) {
     }
   }
 }
-
-
